@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1078823145222",
+    "project_id": "cookme-83bef",
+    "storage_bucket": "cookme-83bef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078823145222:android:1f245d0f3ee21760d81887",
+        "android_client_info": {
+          "package_name": "com.msc.app.cook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1078823145222-888bfv7c9brnrl591a3i8fq66c97um0f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.msc.app.cook",
+            "certificate_hash": "bd8162c4b9a9cfbeb11c737e68918630b57befce"
+          }
+        },
+        {
+          "client_id": "1078823145222-6a8pt72psopn6dufmo5bu2igd79fem90.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkEWZ89OYUmo8Zg0BezCwMqwUHd056loc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1078823145222-6a8pt72psopn6dufmo5bu2igd79fem90.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
