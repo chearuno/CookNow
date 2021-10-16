@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <RelativeLayout
+        android:id="@+id/circleLayout"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_number"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/bg_number"
+            android:gravity="center"
+            android:textAppearance="@style/Regular"
+            android:textColor="@color/colorTextGrey"
+            android:textSize="@dimen/h2" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/stepText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_toStartOf="@+id/wasteBin"
+        android:layout_toEndOf="@id/circleLayout"
+        android:scrollHorizontally="true"
+        android:layout_centerInParent="true"
+        android:textSize="16sp"
+        tools:text="" />
+
+    <ImageView
+        android:id="@+id/wasteBin"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_round_delete_24" />
+
+</RelativeLayout>
