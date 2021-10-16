@@ -67,7 +67,7 @@
         app:layout_constraintGuide_begin="20dp" />
 
     <Button
-        android:id="@+id/registerBtn"
+        android:id="@+id/loginBtn"
         android:layout_width="354dp"
         android:layout_height="48dp"
         android:layout_marginStart="32dp"
