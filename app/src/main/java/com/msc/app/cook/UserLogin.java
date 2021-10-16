@@ -29,9 +29,13 @@ public class UserLogin extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                if(userEmail.toString().equals("testUser@gmail.com")
-                        && userPassword.toString().equals("testPassword")){
+                if(userEmail.toString().equals("test@gmail.com")
+                        && userPassword.toString().equals("test")){
                     Toast.makeText(UserLogin.this, "Login Successfull", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(UserLogin.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+
                 } else {
                     Toast.makeText(UserLogin.this, "Login failed. Please check username and password again", Toast.LENGTH_SHORT).show();
                 }
