@@ -1,4 +1,4 @@
-package com.msc.app.cook.fragments
+package com.msc.app.cook.main_fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

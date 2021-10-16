@@ -38,4 +38,34 @@
     <style name="Regular" parent="android:TextAppearance">
         <item name="fontPath">fonts/SourceSansPro-Regular.otf</item>
     </style>
+
+    <style name="Text22Semi">
+        <item name="android:textSize">@dimen/h1</item>
+        <item name="android:textColor">@color/colorTextDark</item>
+        <item name="android:textAppearance">@style/SemiBold</item>
+    </style>
+
+    <style name="Text22SemiWhite">
+        <item name="android:textSize">@dimen/h1</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Text14Grey">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="android:textColor">@color/colorTextGrey</item>
+        <item name="android:textAppearance">@style/Regular</item>
+    </style>
+
+    <style name="Text14ItGrey">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="android:textColor">@color/colorTextGrey</item>
+        <item name="android:textAppearance">@style/Light</item>
+    </style>
+
+    <style name="Full" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="colorPrimary">@color/colorPink</item>
+        <item name="colorPrimaryDark">@color/colorPink</item>
+        <item name="colorAccent">@color/colorPink</item>
+    </style>
 </resources>

@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.navigation.NavigationView
-import com.msc.app.cook.fragments.*
+import com.msc.app.cook.main_fragments.*
 import com.msc.app.cook.utils.CustomTypefaceSpan
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
