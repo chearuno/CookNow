@@ -27,10 +27,10 @@
             app:expandedTitleTextAppearance="@style/Text22Semi"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <com.msc.app.cook.utils.SquareImageView
+            <ImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="400dp"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax" />
@@ -96,7 +96,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="@dimen/space24"
-                    android:layout_marginTop="-16dp"
                     android:gravity="center_horizontal"
                     android:text="SEMIFREDDO TIRAMISU" />
 
@@ -141,7 +140,7 @@
                     android:layout_marginRight="@dimen/space24"
                     android:drawablePadding="@dimen/space8"
                     android:gravity="center_horizontal"
-                    android:text=" so semifreddo as a combination with one of my favorite desserts Tiramisu sounded so wonderful in my mind that I made me equal to work, to test ever." />
+                    android:text="Morbi dapibus felis magna, et lobortis lectus findimentum augue. Duis aliquet sollicitudin quam id facie augue via scelerisque tortor iaculis vel. Maurc fringilla vulputate neque, vitae ultrices orci viverra et. Proin sed volutpat justo. Donec in dui fermentum," />
 
                 <TextView
                     android:id="@+id/tv_author"
@@ -150,60 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/space8"
                     android:drawablePadding="@dimen/space8"
-                    android:text="by Marco Tomasini" />
-
-<!--                <LinearLayout-->
-<!--                    android:id="@+id/ll_action"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="@dimen/space16"-->
-<!--                    android:background="@android:color/transparent"-->
-<!--                    android:gravity="center_vertical"-->
-<!--                    android:orientation="horizontal">-->
-
-<!--                    <Button-->
-<!--                        android:id="@+id/tv_share"-->
-<!--                        style="@style/Text14Pink"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:background="@null"-->
-<!--                        android:gravity="center"-->
-<!--                        android:paddingLeft="@dimen/space24"-->
-<!--                        android:paddingRight="@dimen/space24"-->
-<!--                        android:text="SHARE" />-->
-
-<!--                    <View-->
-<!--                        android:layout_width="1.5dp"-->
-<!--                        android:layout_height="@dimen/space8"-->
-<!--                        android:background="@color/colorPink" />-->
-
-<!--                    <Button-->
-<!--                        android:id="@+id/tv_comment"-->
-<!--                        style="@style/Text14Pink"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:background="@null"-->
-<!--                        android:gravity="center"-->
-<!--                        android:paddingLeft="@dimen/space24"-->
-<!--                        android:paddingRight="@dimen/space24"-->
-<!--                        android:text="COMMENT" />-->
-
-<!--                    <View-->
-<!--                        android:layout_width="1.5dp"-->
-<!--                        android:layout_height="@dimen/space8"-->
-<!--                        android:background="@color/colorPink" />-->
-
-<!--                    <Button-->
-<!--                        android:id="@+id/tv_rate"-->
-<!--                        style="@style/Text14Pink"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:background="@null"-->
-<!--                        android:gravity="center"-->
-<!--                        android:paddingLeft="@dimen/space24"-->
-<!--                        android:paddingRight="@dimen/space24"-->
-<!--                        android:text="RATE" />-->
-<!--                </LinearLayout>-->
+                    android:text="by Chethana Arunodh" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -267,66 +213,6 @@
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:nestedScrollingEnabled="false" />
-
-<!--                    <RelativeLayout-->
-<!--                        android:id="@+id/rl_share"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_alignTop="@id/recyclerPreparation"-->
-<!--                        android:layout_alignBottom="@id/recyclerPreparation"-->
-<!--                        android:background="@color/colorWhiteTrans"-->
-<!--                        android:visibility="gone">-->
-
-<!--                        <LinearLayout-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_centerInParent="true"-->
-<!--                            android:gravity="center_horizontal"-->
-<!--                            android:orientation="vertical">-->
-
-<!--                            <TextView-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:text="WELL DONE"-->
-<!--                                android:textAppearance="@style/SemiBold"-->
-<!--                                android:textColor="@color/colorTextDark"-->
-<!--                                android:textSize="@dimen/h2" />-->
-
-<!--                            <TextView-->
-<!--                                style="@style/Text14Grey"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_marginTop="@dimen/space8"-->
-<!--                                android:text="You did it! Let your friend know about it!" />-->
-
-<!--                            <LinearLayout-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_marginTop="@dimen/space8"-->
-<!--                                android:orientation="horizontal">-->
-
-<!--                                <ImageView-->
-<!--                                    android:layout_width="wrap_content"-->
-<!--                                    android:layout_height="wrap_content"-->
-<!--                                    android:src="@drawable/ic_google" />-->
-
-<!--                                <ImageView-->
-<!--                                    android:layout_width="wrap_content"-->
-<!--                                    android:layout_height="wrap_content"-->
-<!--                                    android:src="@drawable/ic_facebook" />-->
-
-<!--                                <ImageView-->
-<!--                                    android:layout_width="wrap_content"-->
-<!--                                    android:layout_height="wrap_content"-->
-<!--                                    android:src="@drawable/ic_twitter" />-->
-
-<!--                                <ImageView-->
-<!--                                    android:layout_width="wrap_content"-->
-<!--                                    android:layout_height="wrap_content"-->
-<!--                                    android:src="@drawable/ic_instgram" />-->
-<!--                            </LinearLayout>-->
-<!--                        </LinearLayout>-->
-<!--                    </RelativeLayout>-->
                 </RelativeLayout>
             </LinearLayout>
         </FrameLayout>

@@ -1,14 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recyclerView"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="?actionBarSize">
-
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+    tools:context="main_fragments.FragmentProfile"
+    android:background="#ffffff"
+    android:paddingTop="?actionBarSize"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="405dp">
+        <LinearLayout
+            android:background="@drawable/drawable_background"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_marginTop="45dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/ic_baseline_person_24"/>
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="John Smith"
+                android:textColor="#fff"
+                android:textStyle="bold"
+                android:textSize="21sp"/>
+        </LinearLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="400dp"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="275dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="3">
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="My Recipes"
+                        android:textSize="20sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="125"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:paddingTop="10dp"
+                        android:textColor="#9e3a49"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Favourites"
+                        android:textSize="20sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1205"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:paddingTop="10dp"
+                        android:textColor="#9e3a49"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shopping List"
+                        android:textSize="20sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="360"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:paddingTop="10dp"
+                        android:textColor="#9e3a49"/>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="360dp"
         android:layout_height="wrap_content"
-        android:text="fragment_profile" />
-</RelativeLayout>
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginTop="45dp">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:paddingLeft="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_baseline_email_24"/>
+            <TextView
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="john-smith@gmail.com"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="25dp"
+            android:orientation="horizontal"
+            android:paddingLeft="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_baseline_phone_24"/>
+            <TextView
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="+94771234567"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="25dp"
+            android:orientation="horizontal"
+            android:paddingLeft="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_baseline_create_24"/>
+            <TextView
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="Change password"/>
+        </LinearLayout>
+    </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/button_style"
+        android:text="Sign out"
+        android:textColor="#fff" />
+</LinearLayout>
