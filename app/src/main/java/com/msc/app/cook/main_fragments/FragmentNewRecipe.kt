@@ -90,7 +90,7 @@ class FragmentNewRecipe : Fragment() {
                 totalSec = min + sec
 
                 if (totalSec >= 0 && !errorSec) {
-                    view.txt_cooling_t.text = "$min min $sec"
+                    view.txt_cooling_t.text = "$min min $sec sec"
                     t5DialogUi?.dialog?.dismiss()
                 } else {
                     toast("Please enter time before proceed")

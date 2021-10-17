@@ -1,22 +1,29 @@
 package com.msc.app.cook
 
-import android.net.Uri
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.View
-import android.widget.ImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.msc.app.cook.adaptor.PreparationAdapter
 import com.msc.app.cook.adaptor.ShoppingAdapter
+import com.msc.app.cook.adaptor.SliderAdapterExample
 import com.msc.app.cook.models.ItemPreparation
 import com.msc.app.cook.models.ItemShopping
+import com.msc.app.cook.models.SliderItem
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
+import com.smarteist.autoimageslider.SliderAnimations
+import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.activity_detail.*
 import java.util.*
+
 
 class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
     private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
@@ -25,6 +32,8 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
     private var recyclerViewPreparation: RecyclerView? = null
     private var mAdapterPreparation: PreparationAdapter? = null
     private var rootView: CoordinatorLayout? = null
+    var sliderView: SliderView? = null
+    private var adapter: SliderAdapterExample? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +56,31 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
 
         collapsingToolbarLayout!!.isTitleEnabled = false
 
+        app_bar_layout.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
+            override fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
+                Log.d("STATE", state!!.name)
+                if (state == State.COLLAPSED) {
+                    setupToolbar(
+                        R.id.toolbar,
+                        recipeName,
+                        android.R.color.white,
+                        android.R.color.transparent,
+                        R.drawable.ic_arrow_back
+                    )
+
+                } else {
+                    setupToolbar(
+                        R.id.toolbar,
+                        "",
+                        android.R.color.white,
+                        android.R.color.transparent,
+                        R.drawable.ic_arrow_back
+                    )
+
+                }
+            }
+        })
+
         tv_recipe_name.text = recipeName
 
         recyclerView = findViewById<View>(R.id.recyclerShopping) as RecyclerView
@@ -64,10 +98,45 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
         recyclerViewPreparation!!.itemAnimator = DefaultItemAnimator()
         recyclerViewPreparation!!.adapter = mAdapterPreparation
 
-        val image = findViewById<View>(R.id.image) as ImageView
-        Glide.with(this)
-            .load(Uri.parse(recipeImg))
-            .into(image)
+//        val image = findViewById<View>(R.id.image) as ImageView
+//        Glide.with(this)
+//            .load(Uri.parse(recipeImg))
+//            .into(image)
+
+        sliderView = findViewById(R.id.imageSlider)
+
+
+        adapter = SliderAdapterExample(this)
+        sliderView!!.setSliderAdapter(adapter!!)
+        sliderView!!.setIndicatorAnimation(IndicatorAnimationType.WORM)
+
+        sliderView!!.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
+        sliderView!!.autoCycleDirection = SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH
+        sliderView!!.indicatorSelectedColor = Color.parseColor("#E82D50")
+        sliderView!!.indicatorUnselectedColor = Color.parseColor("#FF000000")
+        sliderView!!.scrollTimeInSec = 3
+        sliderView!!.isAutoCycle = true
+        sliderView!!.startAutoCycle()
+
+
+        sliderView!!.setOnIndicatorClickListener {
+            Log.i(
+                "GGG",
+                "onIndicatorClicked: " + sliderView!!.currentPagePosition
+            )
+        }
+
+
+        val urlList: List<String> = recipeImg!!.split(", ")
+        val sliderItemList: MutableList<SliderItem> = ArrayList<SliderItem>()
+        for (name in urlList) {
+            val sliderItem = SliderItem()
+            sliderItem.description = ""
+            sliderItem.imageUrl =
+                name
+            sliderItemList.add(sliderItem)
+            adapter!!.renewItems(sliderItemList)
+        }
     }
 
     override fun onItemClicked(position: Int) {}
@@ -126,4 +195,32 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
         }
         return itemList
     }
+}
+
+abstract class AppBarStateChangeListener : OnOffsetChangedListener {
+    enum class State {
+        EXPANDED, COLLAPSED, IDLE
+    }
+
+    private var mCurrentState = State.IDLE
+    override fun onOffsetChanged(appBarLayout: AppBarLayout, i: Int) {
+        mCurrentState = if (i == 0) {
+            if (mCurrentState != State.EXPANDED) {
+                onStateChanged(appBarLayout, State.EXPANDED)
+            }
+            State.EXPANDED
+        } else if (Math.abs(i) >= appBarLayout.totalScrollRange) {
+            if (mCurrentState != State.COLLAPSED) {
+                onStateChanged(appBarLayout, State.COLLAPSED)
+            }
+            State.COLLAPSED
+        } else {
+            if (mCurrentState != State.IDLE) {
+                onStateChanged(appBarLayout, State.IDLE)
+            }
+            State.IDLE
+        }
+    }
+
+    abstract fun onStateChanged(appBarLayout: AppBarLayout?, state: State?)
 }
