@@ -15,7 +15,7 @@ public class UserLogin extends AppCompatActivity {
     private EditText userEmail;
     private EditText userPassword;
     private Button btnLogin;
-    //Pls ignore this line..
+    //Pls ignore this line. Just for testing
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
