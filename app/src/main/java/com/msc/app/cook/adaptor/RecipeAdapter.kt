@@ -38,10 +38,11 @@ class RecipeAdapter(private val items: List<ItemRecipe>, private val context: Co
         holder.recipe.text = itemRecipe.recipe
         holder.time.text = itemRecipe.time
         val url = Uri.parse(itemRecipe.img).toString()
+        val urlList: List<String> = url.split(",")
         var requestOptions = RequestOptions()
         requestOptions = requestOptions.transforms(CenterCrop(), RoundedCorners(32))
         Glide.with(context)
-            .load(url)
+            .load(urlList.first())
             .apply(requestOptions)
             .into(holder.imageView)
     }
