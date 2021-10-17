@@ -51,7 +51,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Recipes"
+                        android:text="My Recipes"
                         android:textSize="20sp" />
                     <TextView
                         android:layout_width="wrap_content"
@@ -71,7 +71,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Followers"
+                        android:text="Favourites"
                         android:textSize="20sp" />
                     <TextView
                         android:layout_width="wrap_content"
@@ -91,7 +91,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Following"
+                        android:text="Shopping List"
                         android:textSize="20sp" />
                     <TextView
                         android:layout_width="wrap_content"
@@ -165,13 +165,12 @@
                 android:text="Change password"/>
         </LinearLayout>
     </LinearLayout>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
         android:background="@drawable/button_style"
-        android:text="Find Recipes"
+        android:text="Sign out"
         android:textColor="#fff" />
 </LinearLayout>
