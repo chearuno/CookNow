@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.firebase.storage.FirebaseStorage
 import com.msc.app.cook.adaptor.PreparationAdapter
 import com.msc.app.cook.adaptor.ShoppingAdapter
 import com.msc.app.cook.adaptor.SliderAdapterExample
@@ -23,6 +24,7 @@ import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.activity_detail.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
@@ -34,6 +36,10 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
     private var rootView: CoordinatorLayout? = null
     var sliderView: SliderView? = null
     private var adapter: SliderAdapterExample? = null
+    var storage: FirebaseStorage? = null
+    var currentSarvingQty = 1
+    val itemShoppingList: ArrayList<ItemShopping> = ArrayList()
+    val itemShoppingListForQty: ArrayList<ItemShopping> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,9 +53,10 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
             android.R.color.transparent,
             R.drawable.ic_arrow_back
         )
+        storage = FirebaseStorage.getInstance()
 
-        val recipeName = intent.getStringExtra("RECIPE_NAME")
-        val recipeImg = intent.getStringExtra("RECIPE_IMG")
+        val documentData: Map<String, Any> =
+            intent.getSerializableExtra("DATA_OF_DOCUMENT") as Map<String, Any>
 
         collapsingToolbarLayout =
             findViewById<View>(R.id.collapsing_toolbar) as CollapsingToolbarLayout
@@ -62,7 +69,7 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
                 if (state == State.COLLAPSED) {
                     setupToolbar(
                         R.id.toolbar,
-                        recipeName,
+                        documentData["name"] as String?,
                         android.R.color.white,
                         android.R.color.transparent,
                         R.drawable.ic_arrow_back
@@ -81,27 +88,55 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
             }
         })
 
-        tv_recipe_name.text = recipeName
+        tv_recipe_name.text = documentData["name"] as String?
+        tv_desc.text = documentData["description"] as String?
+        tv_author.text = "by ${documentData["createdBy"]}"
+        tv_time.text = documentData["prepare_time"] as String?
+        tv_love.text = "${documentData["likes"]}"
+
+        val preparation: ArrayList<*> = documentData["preparation"] as ArrayList<*>
+        val shoppingList: ArrayList<*> = documentData["shopping_list"] as ArrayList<*>
 
         recyclerView = findViewById<View>(R.id.recyclerShopping) as RecyclerView
-        mAdapter = ShoppingAdapter(generateShopping(), this)
+
+
+        shoppingList.forEach {
+
+            val item = ItemShopping()
+            val shippingItem = it as HashMap<*, *>
+
+            item.unit = shippingItem["unit"] as String?
+            item.name = shippingItem["name"] as String?
+            item.qty = shippingItem["qty"] as Long?
+            itemShoppingList.add(item)
+            itemShoppingListForQty.add(item);
+        }
+
+        mAdapter = ShoppingAdapter(itemShoppingList, this)
         val mLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView!!.layoutManager = mLayoutManager
         recyclerView!!.itemAnimator = DefaultItemAnimator()
         recyclerView!!.adapter = mAdapter
 
         recyclerViewPreparation = findViewById<View>(R.id.recyclerPreparation) as RecyclerView
-        mAdapterPreparation = PreparationAdapter(baseContext, generatePreparation(), this)
+
+        val itemPreparationList: MutableList<ItemPreparation> = ArrayList()
+        var i = 1
+        preparation.forEach {
+
+            val item = ItemPreparation()
+            item.step = it.toString()
+            item.number = i.toString()
+            itemPreparationList.add(item)
+            i++
+        }
+
+        mAdapterPreparation = PreparationAdapter(baseContext, itemPreparationList, this)
         val mLayoutManagerPreparation =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerViewPreparation!!.layoutManager = mLayoutManagerPreparation
         recyclerViewPreparation!!.itemAnimator = DefaultItemAnimator()
         recyclerViewPreparation!!.adapter = mAdapterPreparation
-
-//        val image = findViewById<View>(R.id.image) as ImageView
-//        Glide.with(this)
-//            .load(Uri.parse(recipeImg))
-//            .into(image)
 
         sliderView = findViewById(R.id.imageSlider)
 
@@ -126,17 +161,63 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
             )
         }
 
+        val imageList: ArrayList<*> = documentData["images"] as ArrayList<*>
 
-        val urlList: List<String> = recipeImg!!.split(", ")
-        val sliderItemList: MutableList<SliderItem> = ArrayList<SliderItem>()
-        for (name in urlList) {
-            val sliderItem = SliderItem()
-            sliderItem.description = ""
-            sliderItem.imageUrl =
-                name
-            sliderItemList.add(sliderItem)
-            adapter!!.renewItems(sliderItemList)
+        val sliderItemList: MutableList<SliderItem> = ArrayList()
+        imageList.forEach {
+
+            val storageRef = storage!!.reference
+
+            val downloadRef = storageRef.child("RecipeImages/${it}")
+
+            downloadRef.downloadUrl.addOnSuccessListener { uri ->
+                Log.e("Doc1", " => $uri")
+                val sliderItem = SliderItem()
+                sliderItem.description = ""
+                sliderItem.imageUrl = uri.toString()
+                sliderItemList.add(sliderItem)
+                adapter!!.renewItems(sliderItemList)
+
+            }
+                .addOnFailureListener {
+                    Log.e("Doc", "Error getting Data: ")
+                }
         }
+
+        btn_saving_plus.setOnClickListener {
+            currentSarvingQty++
+            tv_current_saving.text = currentSarvingQty.toString()
+            val tempItemList: ArrayList<ItemShopping> = ArrayList()
+            itemShoppingListForQty.forEach {
+                val item = ItemShopping()
+                item.unit = it.unit
+                item.name = it.name
+                item.qty = it.qty!! * currentSarvingQty
+                tempItemList.add(item)
+            }
+            itemShoppingList.clear()
+            itemShoppingList.addAll(tempItemList)
+            mAdapter!!.notifyDataSetChanged()
+        }
+
+        btn_saving_minus.setOnClickListener {
+            if (currentSarvingQty != 1) {
+                currentSarvingQty--
+            }
+            tv_current_saving.text = currentSarvingQty.toString()
+            val tempItemList: ArrayList<ItemShopping> = ArrayList()
+            itemShoppingListForQty.forEach {
+                val item = ItemShopping()
+                item.unit = it.unit
+                item.name = it.name
+                item.qty = it.qty!! * currentSarvingQty
+                tempItemList.add(item)
+            }
+            itemShoppingList.clear()
+            itemShoppingList.addAll(tempItemList)
+            mAdapter!!.notifyDataSetChanged()
+        }
+
     }
 
     override fun onItemClicked(position: Int) {}
@@ -157,44 +238,6 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
         return true
     }
 
-    private fun generateShopping(): List<ItemShopping> {
-        val itemList: MutableList<ItemShopping> = ArrayList()
-        val name = arrayOf(
-            "butter",
-            "brown",
-            "eggs",
-            "flour",
-            "baking powder",
-            "of salt",
-            "buttermilk",
-            "orange juice"
-        )
-        val pieces = arrayOf("200g", "200g", "4", "300g", "2tsp", "1 pinch", "100ml", "50ml")
-        for (i in name.indices) {
-            val item = ItemShopping()
-            item.pieces = pieces[i]
-            item.name = name[i]
-            itemList.add(item)
-        }
-        return itemList
-    }
-
-    private fun generatePreparation(): List<ItemPreparation> {
-        val itemList: MutableList<ItemPreparation> = ArrayList()
-        val step = arrayOf(
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque viverra nibh venenatis dictum rutrum. Quisque id velit massa. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vestibulum augue sem, nec fringilla nunc finibus vitae. Praesent euismod dui leo, et sagittis magna rutrum a. Pellentesqu n refrigerator 1 hour.",
-            "Lam condimentum ex vehicula, commodo nulla eget, semper velit. Donec non aliquam ligula. Sed facilisis id augue id iaculis. Curabitur eleifend cursus leo. Nam pu",
-            "Maecenas nisi mi, viverra sed libero ac, molestie maximus ante. Donec id orci aliquam, semper dolor vitae, fringilla ante. Ut nisi metus, facilisis vel imperdiet nec",
-            "Proin tristique risus vel odio porta volutpat. Praesent ornare tortor purus, ut lacinia ex aliquet nec. Maecenas arcu orci, luctus eu purus quis, convallis rhoncus diam. In rhoncus, libero at aliquam molestie, justo odio cursus ligula, non elementum arcu neque quis dui. Sed ultricies ex magna, congue consectetur massa rhoncus sit amet. Maecenas non luctus tortor. Maecenas interdum neque ac pellentesque gravida. Donec vel dui eros. Vivamus mattis lorem eleifend nisl placerat, "
-        )
-        for (i in step.indices) {
-            val item = ItemPreparation()
-            item.step = step[i]
-            item.number = (i + 1).toString()
-            itemList.add(item)
-        }
-        return itemList
-    }
 }
 
 abstract class AppBarStateChangeListener : OnOffsetChangedListener {

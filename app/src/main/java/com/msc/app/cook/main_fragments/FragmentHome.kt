@@ -2,23 +2,32 @@ package com.msc.app.cook.main_fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.msc.app.cook.Detail
 import com.msc.app.cook.MainActivity
 import com.msc.app.cook.R
 import com.msc.app.cook.adaptor.RecipeAdapter
 import com.msc.app.cook.adaptor.RecyclerTouchListener
 import com.msc.app.cook.models.ItemRecipe
+import java.io.Serializable
 
 class FragmentHome : Fragment() {
 
     private var mAdapter: RecipeAdapter? = null
     private var itemList: ArrayList<ItemRecipe> = ArrayList()
     private var recyclerView: RecyclerView? = null
+    var progressHUD: KProgressHUD? = null
+    var db: FirebaseFirestore? = null
+    var storage: FirebaseStorage? = null
+    private var currentItemList: ArrayList<Map<String, Any>> = ArrayList()
 
     override fun onCreate(a: Bundle?) {
         super.onCreate(a)
@@ -39,14 +48,23 @@ class FragmentHome : Fragment() {
             R.drawable.ic_burger
         )
 
-        recyclerView = view.findViewById<View>(R.id.recyclerView) as RecyclerView
+        progressHUD = KProgressHUD.create(requireContext())
+            .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+            .setLabel("Please wait")
+            .setDetailsLabel("We fetching recent recipe list.")
+            .setCancellable(true)
+            .setAnimationSpeed(2)
+            .setDimAmount(0.5f)
 
-        mAdapter = activity?.let { RecipeAdapter(setupRecipe(), it) }
+        db = FirebaseFirestore.getInstance()
+        storage = FirebaseStorage.getInstance()
+
+        recyclerView = view.findViewById<View>(R.id.recyclerView) as RecyclerView
         val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(activity, 2)
         mLayoutManager.isAutoMeasureEnabled = true
         recyclerView!!.layoutManager = mLayoutManager
         recyclerView!!.itemAnimator = DefaultItemAnimator()
-        recyclerView!!.adapter = mAdapter
+        setDataList()
 
         recyclerView!!.addOnItemTouchListener(
             RecyclerTouchListener(
@@ -54,9 +72,17 @@ class FragmentHome : Fragment() {
                 recyclerView!!,
                 object : RecyclerTouchListener.ClickListener {
                     override fun onClick(view: View?, position: Int) {
+                        var tempItem: Map<String, Any> = HashMap<String, Any>()
+                        currentItemList.forEach {
+                            if(itemList[position].id!! == it["id"]){
+                                tempItem = it
+                            }
+                        }
                         val intent = Intent(activity, Detail::class.java)
-                        intent.putExtra("RECIPE_NAME", itemList[position].recipe)
-                        intent.putExtra("RECIPE_IMG", itemList[position].img)
+                        intent.putExtra(
+                            "DATA_OF_DOCUMENT",
+                            tempItem as Serializable?
+                        )
                         startActivity(intent)
                     }
 
@@ -75,36 +101,54 @@ class FragmentHome : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    private fun setupRecipe(): List<ItemRecipe> {
-        itemList = java.util.ArrayList<ItemRecipe>()
-        val recipe = arrayOf(
-            "BLOOD ORANGE CAKE",
-            "SEMIFREDDO TIRAMISU",
-            "MARBLE CAKE",
-            "RICE PUDDING",
-            "RAINBOW CAKE",
-            "ICE CREAM",
-            "STROWBERRY CAKE",
-            "CUPCAKE FRUIT"
-        )
-        val img = arrayOf(
-            "https://images.pexels.com/photos/53468/dessert-orange-food-chocolate-53468.jpeg?h=350&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/55809/dessert-strawberry-tart-berry-55809.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/8382/pexels-photo.jpg?w=1260&h=750&auto=compress&cs=tinysrgb ",
-            "https://images.pexels.com/photos/159887/pexels-photo-159887.jpeg?h=350&auto=compress, https://images.pexels.com/photos/53468/dessert-orange-food-chocolate-53468.jpeg?h=350&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/55809/dessert-strawberry-tart-berry-55809.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/8382/pexels-photo.jpg?w=1260&h=750&auto=compress&cs=tinysrgb",
-            "https://images.pexels.com/photos/136745/pexels-photo-136745.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/53468/dessert-orange-food-chocolate-53468.jpeg?h=350&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/55809/dessert-strawberry-tart-berry-55809.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/8382/pexels-photo.jpg?w=1260&h=750&auto=compress&cs=tinysrgb",
-            "https://images.pexels.com/photos/39355/dessert-raspberry-leaf-almond-39355.jpeg?h=350&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/53468/dessert-orange-food-chocolate-53468.jpeg?h=350&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/55809/dessert-strawberry-tart-berry-55809.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/8382/pexels-photo.jpg?w=1260&h=750&auto=compress&cs=tinysrgb",
-            "https://images.pexels.com/photos/239578/pexels-photo-239578.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/53468/dessert-orange-food-chocolate-53468.jpeg?h=350&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/55809/dessert-strawberry-tart-berry-55809.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/8382/pexels-photo.jpg?w=1260&h=750&auto=compress&cs=tinysrgb",
-            "https://images.pexels.com/photos/8382/pexels-photo.jpg?w=1260&h=750&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/53468/dessert-orange-food-chocolate-53468.jpeg?h=350&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/55809/dessert-strawberry-tart-berry-55809.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb",
-            "https://images.pexels.com/photos/55809/dessert-strawberry-tart-berry-55809.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/53468/dessert-orange-food-chocolate-53468.jpeg?h=350&auto=compress&cs=tinysrgb",
-            "https://images.pexels.com/photos/55809/dessert-strawberry-tart-berry-55809.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb, https://images.pexels.com/photos/53468/dessert-orange-food-chocolate-53468.jpeg?h=350&auto=compress&cs=tinysrgb"
-        )
-        val time = arrayOf("1h 5'", "30m", "1h 10'", "50m", "20m", "1h 20'", "20m", "1h 20'")
-        for (i in recipe.indices) {
-            val item = ItemRecipe()
-            item.recipe = recipe[i]
-            item.time = time[i]
-            item.img = img[i]
-            itemList.add(item)
-        }
-        return itemList
+    private fun setDataList() {
+        progressHUD!!.show()
+        db = FirebaseFirestore.getInstance()
+        itemList.clear()
+        currentItemList.clear()
+
+        db!!.collection("Recipes")
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    for (document in task.result!!) {
+
+                        Log.e("Doc", document.id)
+                        val documentData = document.data
+                        val title = documentData["name"]
+                        val id = documentData["id"]
+                        val preparationTime = documentData["prepare_time"]
+                        val image: ArrayList<*> = documentData["images"] as ArrayList<*>
+
+                        currentItemList.add(documentData)
+                        val storageRef = storage!!.reference
+
+                        val downloadRef = storageRef.child("RecipeImages/${image.first()}")
+
+                        downloadRef.downloadUrl.addOnSuccessListener { uri ->
+                            Log.e("Doc1", " => $uri")
+                            val imageURI = uri.toString()
+                            val item = ItemRecipe()
+                            item.recipe = title as String?
+                            item.time = preparationTime as String?
+                            item.id = id as Long?
+                            item.img = imageURI
+                            itemList.add(item)
+                            mAdapter = activity?.let { RecipeAdapter(itemList, requireContext()) }
+                            recyclerView!!.adapter = mAdapter
+                            progressHUD!!.dismiss()
+                        }
+                            .addOnFailureListener {
+                                Log.e("Doc", "Error getting Data: ")
+                                progressHUD!!.dismiss()
+                            }
+                    }
+
+
+                } else {
+                    Log.e("Doc", "Error getting documents: ", task.exception)
+                    progressHUD!!.dismiss()
+                }
+            }
     }
 }

@@ -56,7 +56,7 @@ class IngredientAdapter : RecyclerView.Adapter<IngredientViewHolder> {
         var wasteBin: ImageView? = null
         fun bind(ingredient: ItemShopping) {
             ingredientText.text = ingredient.name
-            ingredientPices.text = ingredient.pieces
+            ingredientPices.text = "${ingredient.qty}${ingredient.unit}"
         }
 
         init {

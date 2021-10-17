@@ -12,13 +12,10 @@ import com.msc.app.cook.models.ItemShopping
 class ShoppingAdapter(private val items: List<ItemShopping>, private val context: Context) :
     RecyclerView.Adapter<ShoppingAdapter.MyViewHolder>() {
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var pieces: TextView
-        var name: TextView
+        var pieces: TextView = view.findViewById<View>(R.id.tv_qty) as TextView
+        var name: TextView = view.findViewById<View>(R.id.tv_name) as TextView
+        var unit: TextView = view.findViewById<View>(R.id.tv_unit) as TextView
 
-        init {
-            pieces = view.findViewById<View>(R.id.tv_pieces) as TextView
-            name = view.findViewById<View>(R.id.tv_name) as TextView
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -30,7 +27,12 @@ class ShoppingAdapter(private val items: List<ItemShopping>, private val context
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val itemShopping = items[position]
         holder.name.text = itemShopping.name
-        holder.pieces.text = itemShopping.pieces
+        holder.pieces.text = itemShopping.qty.toString()
+        if (itemShopping.unit != "-") {
+            holder.unit.text = itemShopping.unit
+        } else {
+            holder.unit.text = ""
+        }
     }
 
     override fun getItemCount(): Int {

@@ -96,6 +96,11 @@ class FragmentNewIngredients : Fragment() {
             val newIngredient: String = ingredientField!!.text.toString()
             val newIngredientPieces: String = ingredientPieces!!.text.toString()
 
+            var newIngredientUnit = ""
+            if (ingredientQTYText!!.text != "-") {
+                newIngredientUnit = ingredientQTYText!!.text as String
+            }
+
             when {
                 newIngredient.isEmpty() -> {
                     Toast.makeText(
@@ -112,8 +117,9 @@ class FragmentNewIngredients : Fragment() {
                     ingredientField!!.setText("")
                     ingredientPieces!!.setText("")
                     val item = ItemShopping()
-                    item.pieces = "$newIngredientPieces ${ingredientQTYText!!.text}"
+                    item.unit = newIngredientUnit
                     item.name = newIngredient
+                    item.qty = newIngredientPieces.toLong()
                     ingredientList.add(item)
                     toggleEmptyView()
                     ingredientAdapter!!.notifyDataSetChanged()
@@ -146,7 +152,8 @@ class FragmentNewIngredients : Fragment() {
             "pint",
             "cups",
             "ounces",
-            "pounds"
+            "pounds",
+            "No measurement Unit (-)"
         )
 
         val builder = AlertDialog.Builder(requireContext())
@@ -155,7 +162,11 @@ class FragmentNewIngredients : Fragment() {
 
         builder.setItems(wsList) { _, which ->
             val selected = wsList[which]
-            ingredientQTYText!!.text = selected
+            if (selected == "No measurement Unit (-)") {
+                ingredientQTYText!!.text = "-"
+            } else {
+                ingredientQTYText!!.text = selected
+            }
 
         }
 
