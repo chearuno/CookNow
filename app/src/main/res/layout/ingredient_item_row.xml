@@ -9,8 +9,8 @@
         android:id="@+id/circleLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/ingredientText"
         android:layout_alignTop="@id/ingredientText"
+        android:layout_alignBottom="@id/ingredientText"
         android:layout_marginRight="8dp"
         android:gravity="center">
 
@@ -25,14 +25,14 @@
     <TextView
         android:id="@+id/ingredientText"
         android:layout_width="wrap_content"
-        android:maxWidth="200dp"
         android:layout_height="wrap_content"
         android:layout_toStartOf="@id/ingredientText"
         android:layout_toEndOf="@id/circleLayout"
-        android:textSize="16sp"
-        android:scrollHorizontally="true"
         android:ellipsize="end"
+        android:maxWidth="200dp"
         android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:textSize="16sp"
         tools:text="3 cups of milk " />
 
     <TextView
@@ -51,8 +51,8 @@
         android:id="@+id/wasteBin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_alignParentEnd="true"
+        android:layout_marginStart="8dp"
         android:src="@drawable/ic_round_delete_24" />
 
 </RelativeLayout>

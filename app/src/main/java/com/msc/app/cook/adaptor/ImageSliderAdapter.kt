@@ -1,21 +1,21 @@
 package com.msc.app.cook.adaptor
 
 import android.content.Context
-import android.graphics.Color
-import com.smarteist.autoimageslider.SliderViewAdapter
-import com.msc.app.cook.adaptor.SliderAdapterExample.SliderAdapterVH
-import com.msc.app.cook.models.SliderItem
-import android.view.ViewGroup
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
-import com.msc.app.cook.R
 import com.bumptech.glide.Glide
-import android.widget.Toast
-import android.widget.TextView
-import java.util.ArrayList
+import com.bumptech.glide.request.RequestOptions
+import com.msc.app.cook.FullImageActivity
+import com.msc.app.cook.R
+import com.msc.app.cook.adaptor.ImageSliderAdapter.SliderAdapterVH
+import com.msc.app.cook.models.SliderItem
+import com.smarteist.autoimageslider.SliderViewAdapter
+import java.util.*
 
-class SliderAdapterExample(private val context: Context) : SliderViewAdapter<SliderAdapterVH>() {
+class ImageSliderAdapter(private val context: Context) : SliderViewAdapter<SliderAdapterVH>() {
     private var mSliderItems: MutableList<SliderItem> = ArrayList()
     fun renewItems(sliderItems: MutableList<SliderItem>) {
         mSliderItems = sliderItems
@@ -40,15 +40,22 @@ class SliderAdapterExample(private val context: Context) : SliderViewAdapter<Sli
 
     override fun onBindViewHolder(viewHolder: SliderAdapterVH, position: Int) {
         val sliderItem = mSliderItems[position]
+        val requestOptions = RequestOptions()
+        requestOptions.centerCrop()
+
         Glide.with(viewHolder.itemView)
+            .setDefaultRequestOptions(requestOptions)
             .load(sliderItem.imageUrl)
             .into(viewHolder.imageViewBackground)
+
         viewHolder.itemView.setOnClickListener {
-            Toast.makeText(
-                context,
-                "This is item in position $position",
-                Toast.LENGTH_SHORT
-            ).show()
+            context.startActivity(
+                Intent(context, FullImageActivity::class.java).putExtra(
+                    "image",
+                    sliderItem.imageUrl
+                )
+            )
+
         }
     }
 

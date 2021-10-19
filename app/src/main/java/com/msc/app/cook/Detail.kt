@@ -13,9 +13,9 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.firebase.storage.FirebaseStorage
+import com.msc.app.cook.adaptor.ImageSliderAdapter
 import com.msc.app.cook.adaptor.PreparationAdapter
 import com.msc.app.cook.adaptor.ShoppingAdapter
-import com.msc.app.cook.adaptor.SliderAdapterExample
 import com.msc.app.cook.models.ItemPreparation
 import com.msc.app.cook.models.ItemShopping
 import com.msc.app.cook.models.SliderItem
@@ -23,8 +23,6 @@ import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnima
 import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.activity_detail.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
@@ -35,7 +33,7 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
     private var mAdapterPreparation: PreparationAdapter? = null
     private var rootView: CoordinatorLayout? = null
     var sliderView: SliderView? = null
-    private var adapter: SliderAdapterExample? = null
+    private var adapterImage: ImageSliderAdapter? = null
     var storage: FirebaseStorage? = null
     var currentSarvingQty = 1
     val itemShoppingList: ArrayList<ItemShopping> = ArrayList()
@@ -55,8 +53,8 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
         )
         storage = FirebaseStorage.getInstance()
 
-        val documentData: Map<String, Any> =
-            intent.getSerializableExtra("DATA_OF_DOCUMENT") as Map<String, Any>
+        val documentData: HashMap<String, Any> =
+            intent.getSerializableExtra("DATA_OF_DOCUMENT") as HashMap<String, Any>
 
         collapsingToolbarLayout =
             findViewById<View>(R.id.collapsing_toolbar) as CollapsingToolbarLayout
@@ -103,7 +101,7 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
         shoppingList.forEach {
 
             val item = ItemShopping()
-            val shippingItem = it as HashMap<*, *>
+            val shippingItem = it as HashMap<String, Any>
 
             item.unit = shippingItem["unit"] as String?
             item.name = shippingItem["name"] as String?
@@ -141,8 +139,8 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
         sliderView = findViewById(R.id.imageSlider)
 
 
-        adapter = SliderAdapterExample(this)
-        sliderView!!.setSliderAdapter(adapter!!)
+        adapterImage = ImageSliderAdapter(this)
+        sliderView!!.setSliderAdapter(adapterImage!!)
         sliderView!!.setIndicatorAnimation(IndicatorAnimationType.WORM)
 
         sliderView!!.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
@@ -176,7 +174,7 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
                 sliderItem.description = ""
                 sliderItem.imageUrl = uri.toString()
                 sliderItemList.add(sliderItem)
-                adapter!!.renewItems(sliderItemList)
+                adapterImage!!.renewItems(sliderItemList)
 
             }
                 .addOnFailureListener {

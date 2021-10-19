@@ -1,7 +1,5 @@
 package com.msc.app.cook;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,7 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.auth.User;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class UserRegistration extends AppCompatActivity {
     private EditText userName;
@@ -31,13 +29,13 @@ public class UserRegistration extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (userName.equals("")){
+                if (userName.equals("")) {
                     Toast.makeText(UserRegistration.this, "Username is blank", Toast.LENGTH_SHORT).show();
                 }
-                if (userEmail.equals("")){
+                if (userEmail.equals("")) {
                     Toast.makeText(UserRegistration.this, "Email is blank", Toast.LENGTH_SHORT).show();
                 }
-                if (userPassword.equals("")){
+                if (userPassword.equals("")) {
                     Toast.makeText(UserRegistration.this, "Password is blank", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(UserRegistration.this, MainActivity.class);

@@ -1,9 +1,9 @@
 package com.msc.app.cook.adaptor
 
-import androidx.recyclerview.widget.RecyclerView
 import android.util.SparseBooleanArray
+import androidx.recyclerview.widget.RecyclerView
 import com.msc.app.cook.adaptor.SelectableAdapter
-import java.util.ArrayList
+import java.util.*
 
 abstract class SelectableAdapter<VH : RecyclerView.ViewHolder?> : RecyclerView.Adapter<VH>() {
     private val selectedItems: SparseBooleanArray
