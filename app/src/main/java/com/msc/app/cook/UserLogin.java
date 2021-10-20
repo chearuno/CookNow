@@ -9,13 +9,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.text.BreakIterator;
 
 public class UserLogin extends AppCompatActivity {
-    private EditText userEmail;
-    private EditText userPassword;
+    private EditText userEmail, userPassword;
     private Button btnLogin;
-    //Pls ignore this line. Just for testing
+
+    private FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private DatabaseReference root = db.getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
