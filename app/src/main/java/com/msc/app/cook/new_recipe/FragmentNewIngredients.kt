@@ -1,10 +1,15 @@
 package com.msc.app.cook.new_recipe
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,7 +19,12 @@ import com.msc.app.cook.R
 import com.msc.app.cook.adaptor.IngredientAdapter
 import com.msc.app.cook.adaptor.RecyclerTouchListener
 import com.msc.app.cook.models.ItemShopping
+import com.msc.app.cook.utils.Utils
+import com.msc.app.cook.utils.Utils.toastError
 import kotlinx.android.synthetic.main.fragment_new_ingredients.view.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.set
 
 class FragmentNewIngredients : Fragment() {
 
@@ -49,12 +59,32 @@ class FragmentNewIngredients : Fragment() {
             R.drawable.ic_burger
         )
 
+        val putData = requireArguments().getSerializable("RECIPE_DATA") as HashMap<String, Any>
+
         view.btn_next.setOnClickListener {
 
-            val tempFragment = FragmentNewDirections()
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.frameLayout, tempFragment).addToBackStack(null)
-                .commit()
+            if (ingredientList.isEmpty()) {
+                Utils.alerterDialog(
+                    "Error!",
+                    "Please add one or more ingredients.",
+                    requireActivity()
+                )
+            } else {
+                val imm =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(view.windowToken, 0)
+
+                putData["shopping_list"] = ingredientList
+
+                val bundle = Bundle()
+                bundle.putSerializable("RECIPE_DATA", putData)
+
+                val tempFragment = FragmentNewDirections()
+                tempFragment.arguments = bundle
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayout, tempFragment).addToBackStack(null)
+                    .commit()
+            }
         }
 
         ingredientRecyclerView = view.findViewById(R.id.recyclerView)
@@ -103,14 +133,10 @@ class FragmentNewIngredients : Fragment() {
 
             when {
                 newIngredient.isEmpty() -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Please enter ingredient name",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    toastError("Please enter ingredient name", requireContext())
                 }
                 newIngredientPieces.isEmpty() -> {
-                    Toast.makeText(requireContext(), "Please add pieces", Toast.LENGTH_LONG).show()
+                    toastError("Please add pieces", requireContext())
                 }
                 else -> {
 

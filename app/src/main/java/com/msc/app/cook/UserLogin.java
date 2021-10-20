@@ -1,7 +1,5 @@
 package com.msc.app.cook;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,17 +7,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.text.BreakIterator;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class UserLogin extends AppCompatActivity {
-    private EditText userEmail, userPassword;
+    private EditText userEmail;
+    private EditText userPassword;
     private Button btnLogin;
-
-    private FirebaseDatabase db = FirebaseDatabase.getInstance();
-    private DatabaseReference root = db.getReference();
+    //Pls ignore this line. Just for testing
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +28,8 @@ public class UserLogin extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                if(userEmail.toString().equals("test@gmail.com")
-                        && userPassword.toString().equals("test")){
+                if (userEmail.toString().equals("test@gmail.com")
+                        && userPassword.toString().equals("test")) {
                     Toast.makeText(UserLogin.this, "Login Successfull", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(UserLogin.this, MainActivity.class);
                     startActivity(intent);

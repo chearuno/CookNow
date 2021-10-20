@@ -2,9 +2,8 @@ package com.msc.app.cook.utils
 
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.text.style.TypefaceSpan
 import android.text.TextPaint
-import com.msc.app.cook.utils.CustomTypefaceSpan
+import android.text.style.TypefaceSpan
 
 class CustomTypefaceSpan(family: String?, private val newType: Typeface) : TypefaceSpan(family) {
     override fun updateDrawState(ds: TextPaint) {

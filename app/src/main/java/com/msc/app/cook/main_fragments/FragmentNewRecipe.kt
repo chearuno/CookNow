@@ -1,20 +1,41 @@
 package com.msc.app.cook.main_fragments
 
+import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.msc.app.cook.ImagesActivity
+import com.msc.app.cook.ImagesActivity.selectedImageList
 import com.msc.app.cook.MainActivity
 import com.msc.app.cook.R
+import com.msc.app.cook.adaptor.SelectedImageAdapter
 import com.msc.app.cook.new_recipe.FragmentNewIngredients
 import com.msc.app.cook.utils.CustomT5Dialog
+import com.msc.app.cook.utils.Utils.alerterDialog
+import com.msc.app.cook.utils.Utils.toastError
 import kotlinx.android.synthetic.main.fragment_new_recipe.view.*
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.contentView
+import java.text.SimpleDateFormat
+import java.util.*
+import androidx.core.content.ContextCompat.getSystemService
+
+
+
 
 class FragmentNewRecipe : Fragment() {
+
+    var selectedImageRecyclerView: RecyclerView? = null
+    var selectedImageAdapter: SelectedImageAdapter? = null
+
     override fun onCreate(a: Bundle?) {
         super.onCreate(a)
         setHasOptionsMenu(false)
@@ -34,12 +55,46 @@ class FragmentNewRecipe : Fragment() {
             R.drawable.ic_burger
         )
 
-        view.btn_next.setOnClickListener {
+        selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view)
 
-            val tempFragment = FragmentNewIngredients()
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.frameLayout, tempFragment).addToBackStack(null)
-                .commit()
+        view.btn_next.setOnClickListener {
+            when {
+                selectedImageList.isEmpty() -> {
+                    alerterDialog("Error!", "Please select an images.", requireActivity())
+                }
+                view.recipe_name.text.isEmpty() -> {
+                    alerterDialog("Error!", "Recipe name should not be empty.", requireActivity())
+                }
+                view.recipe_description.text.isEmpty() -> {
+                    alerterDialog(
+                        "Error!",
+                        "Recipe description should not be empty.",
+                        requireActivity()
+                    )
+                }
+                else -> {
+                    val imm = requireActivity().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+                        imm?.hideSoftInputFromWindow(view.windowToken, 0)
+
+                    val putData: HashMap<String, Any> = HashMap()
+                    putData["name"] = view.recipe_name.text.toString()
+                    putData["likes"] = 0
+                    putData["createdBy"] = "Chethana Arunodh"
+                    putData["description"] = view.recipe_description.text.toString()
+                    putData["isPrivate"] = false
+                    putData["prepare_time"] = view.txt_cooling_t.text.toString()
+                    putData["createdDate"] =
+                        SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().time)
+
+                    val tempFragment = FragmentNewIngredients()
+                    val bundle = Bundle()
+                    bundle.putSerializable("RECIPE_DATA", putData)
+                    tempFragment.arguments = bundle
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.frameLayout, tempFragment).addToBackStack(null)
+                        .commit()
+                }
+            }
         }
 
         view.layout_cooling_t5.setOnClickListener {
@@ -47,7 +102,40 @@ class FragmentNewRecipe : Fragment() {
             displayCustomT5Dialog(view)
         }
 
+        view.choose_image.setOnClickListener {
+
+            val intent = Intent(activity, ImagesActivity::class.java)
+            startActivity(intent)
+        }
+
         return view
+    }
+
+    private fun setSelectedImageList() {
+        if (selectedImageList.isEmpty() && view != null) {
+            requireView().recipe_image_layout.visibility = View.VISIBLE
+            requireView().recipe_image.visibility = View.VISIBLE
+            selectedImageRecyclerView?.visibility = View.GONE
+            requireView().recipe_image.setBackgroundResource(R.drawable.search_empty)
+            requireView().choose_image.text = "Select an images"
+
+        } else {
+            requireView().recipe_image.visibility = View.GONE
+            view?.recipe_image_layout?.visibility = View.GONE
+            selectedImageRecyclerView?.visibility = View.VISIBLE
+            requireView().choose_image.text = "Change selected Images"
+
+            val layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            selectedImageRecyclerView?.layoutManager = layoutManager
+            selectedImageAdapter = SelectedImageAdapter(requireContext(), selectedImageList)
+            selectedImageRecyclerView?.adapter = selectedImageAdapter
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setSelectedImageList()
     }
 
     fun displayCustomT5Dialog(view: View) {
@@ -62,20 +150,23 @@ class FragmentNewRecipe : Fragment() {
             val minituesVal = t5DialogUi!!.minInputText.text.toString()
             val secondVal = t5DialogUi!!.secInputText.text.toString()
 
-            var totalSec = 0;
+            var totalSec = 0
             var min = 0
             var sec = 0
             var errorSec = false
 
 
             if (secondVal.equals("") && minituesVal.equals("")) {
-                toast("Please enter time before proceed")
+                toastError("Please enter time before proceed", requireContext())
             } else {
                 if (secondVal.equals("")) {
                     sec = 0
                 } else {
                     if (secondVal.toInt() > 60) {
-                        toast("Invalid Seconds. Please enter below 60 value for seconds")
+                        toastError(
+                            "Invalid Seconds. Please enter below 60 value for seconds",
+                            requireContext()
+                        )
                         errorSec = true
                     } else {
                         sec = secondVal.toInt()
@@ -93,7 +184,7 @@ class FragmentNewRecipe : Fragment() {
                     view.txt_cooling_t.text = "$min min $sec sec"
                     t5DialogUi?.dialog?.dismiss()
                 } else {
-                    toast("Please enter time before proceed")
+                    toastError("Please enter time before proceed", requireContext())
                 }
 
             }
@@ -102,9 +193,5 @@ class FragmentNewRecipe : Fragment() {
         t5DialogUi?.cancelButton?.setOnClickListener {
             t5DialogUi!!.dialog.dismiss()
         }
-    }
-
-    fun toast(str: String) {
-        Toast.makeText(requireContext(), str, Toast.LENGTH_LONG).show()
     }
 }

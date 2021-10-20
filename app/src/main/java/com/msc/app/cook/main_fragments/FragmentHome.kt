@@ -26,7 +26,7 @@ class FragmentHome : Fragment() {
     private var recyclerView: RecyclerView? = null
     var progressHUD: KProgressHUD? = null
     var db: FirebaseFirestore? = null
-    var storage: FirebaseStorage? = null
+    private var storage: FirebaseStorage? = null
     private var currentItemList: ArrayList<Map<String, Any>> = ArrayList()
 
     override fun onCreate(a: Bundle?) {
@@ -74,7 +74,7 @@ class FragmentHome : Fragment() {
                     override fun onClick(view: View?, position: Int) {
                         var tempItem: Map<String, Any> = HashMap<String, Any>()
                         currentItemList.forEach {
-                            if(itemList[position].id!! == it["id"]){
+                            if (itemList[position].id!! == it["id"]) {
                                 tempItem = it
                             }
                         }
