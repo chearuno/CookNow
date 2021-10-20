@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="?actionBarSize">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/empty_view"
+    <Button
+        android:id="@+id/reset_category_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:text="😞😞😞 \nNo recipes this time. Try change different category."
-        android:textSize="18sp"
-        android:visibility="gone" />
+        android:layout_margin="10dp"
+        android:background="@color/transparent"
+        android:gravity="center|end"
+        android:textColor="@color/colorPink"
+        android:text="Clear Selection" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -20,4 +20,5 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never" />
-</RelativeLayout>
+</LinearLayout>
+

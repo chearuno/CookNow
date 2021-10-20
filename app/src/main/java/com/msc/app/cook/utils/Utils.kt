@@ -5,11 +5,13 @@ import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
 import com.msc.app.cook.R
+import com.msc.app.cook.models.ItemCategory
 import com.tapadoo.alerter.Alerter
 import es.dmoral.toasty.Toasty
 
 object Utils {
 
+     var categoryItemList: ArrayList<ItemCategory> = ArrayList()
 
     fun alertDialog(title: String, message: String, context: Context) {
         val dialogBuilder = AlertDialog.Builder(context)

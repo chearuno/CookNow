@@ -19,6 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space8"
         android:gravity="center_horizontal"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:text="RECIPES"
         android:textColor="@color/colorTextDark"
         android:textSize="@dimen/h3" />

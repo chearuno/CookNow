@@ -54,6 +54,10 @@
         <activity
             android:name=".FullImageActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
+            android:name=".CategorySelection"
+            android:exported="true" />
     </application>
 
 </manifest>

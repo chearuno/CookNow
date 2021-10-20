@@ -60,7 +60,6 @@ class PreparationAdapter(
         interface ClickListener {
             fun onItemClicked(position: Int)
             fun onItemLongClicked(position: Int): Boolean
-            fun onCreateOptionsMenu(menu: Menu?): Boolean
         }
 
         //private final View selectedOverlay;

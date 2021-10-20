@@ -3,8 +3,8 @@ package com.msc.app.cook
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,31 +26,29 @@ import kotlinx.android.synthetic.main.activity_detail.*
 
 
 class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
+
     private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
     private var recyclerView: RecyclerView? = null
     private var mAdapter: ShoppingAdapter? = null
     private var recyclerViewPreparation: RecyclerView? = null
     private var mAdapterPreparation: PreparationAdapter? = null
     private var rootView: CoordinatorLayout? = null
-    var sliderView: SliderView? = null
+    private var sliderView: SliderView? = null
     private var adapterImage: ImageSliderAdapter? = null
-    var storage: FirebaseStorage? = null
-    var currentSarvingQty = 1
-    val itemShoppingList: ArrayList<ItemShopping> = ArrayList()
-    val itemShoppingListForQty: ArrayList<ItemShopping> = ArrayList()
+    private var storage: FirebaseStorage? = null
+    private var currentSarvingQty = 1
+    private val itemShoppingList: ArrayList<ItemShopping> = ArrayList()
+    private val itemShoppingListForQty: ArrayList<ItemShopping> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
         rootView = findViewById<View>(R.id.rootview) as CoordinatorLayout
-        setupToolbar(
-            R.id.toolbar,
-            "",
-            android.R.color.white,
-            android.R.color.transparent,
-            R.drawable.ic_arrow_back
-        )
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar_details)
+        setSupportActionBar(toolbar)
+
         storage = FirebaseStorage.getInstance()
 
         val documentData: HashMap<String, Any> =
@@ -65,22 +63,12 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
                 Log.d("STATE", state!!.name)
                 if (state == State.COLLAPSED) {
-                    setupToolbar(
-                        R.id.toolbar,
-                        documentData["name"] as String?,
-                        android.R.color.white,
-                        android.R.color.transparent,
-                        R.drawable.ic_arrow_back
-                    )
+                    supportActionBar?.title = documentData["name"] as String?
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
                 } else {
-                    setupToolbar(
-                        R.id.toolbar,
-                        "",
-                        android.R.color.white,
-                        android.R.color.transparent,
-                        R.drawable.ic_arrow_back
-                    )
+                    supportActionBar?.title = ""
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
                 }
             }
@@ -107,7 +95,7 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
             item.name = shippingItem["name"] as String?
             item.qty = shippingItem["qty"] as Long?
             itemShoppingList.add(item)
-            itemShoppingListForQty.add(item);
+            itemShoppingListForQty.add(item)
         }
 
         mAdapter = ShoppingAdapter(itemShoppingList, this)
@@ -226,14 +214,6 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
 
     private fun toggleSelection(position: Int) {
         mAdapterPreparation!!.toggleSelection(position)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_home, menu)
-        var drawable = menu?.findItem(R.id.action_search)
-        drawable?.isVisible = false
-        return true
     }
 
 }
