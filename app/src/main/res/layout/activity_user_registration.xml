@@ -7,7 +7,7 @@
     tools:context=".UserRegistration">
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/profpic"
         android:layout_width="179dp"
         android:layout_height="208dp"
         android:layout_marginStart="32dp"
@@ -90,7 +90,8 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="107dp"
         android:layout_marginBottom="64dp"
-        android:text="Already Registered? Login Here"
+        android:text="Already Registered? Login Now!"
+        android:onClick="btn_userLoginForm"
         android:textColor="#646161"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -129,6 +130,7 @@
         android:layout_marginEnd="169dp"
         android:ems="10"
         android:hint="Password"
+        android:backgroundTint="@color/colorPink"
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:padding="10dp"
@@ -148,6 +150,7 @@
         android:layout_marginBottom="15dp"
         android:ems="10"
         android:hint="E-mail"
+        android:backgroundTint="@color/colorPink"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         android:padding="10dp"
@@ -165,10 +168,11 @@
         android:layout_marginTop="28dp"
         android:layout_marginEnd="169dp"
         android:ems="10"
+        android:hint="Name"
+        android:backgroundTint="@color/colorPink"
         android:inputType="textPersonName"
         android:minHeight="48dp"
         android:padding="10dp"
-        android:text="Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -187,4 +191,34 @@
         app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="135dp"
+        android:layout_height="127dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="52dp"
+        app:layout_constraintBottom_toTopOf="@+id/registerBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/profpicavtr" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="57dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="46dp"
+        android:layout_marginBottom="27dp"
+        android:text="Add Photo"
+        app:layout_constraintBottom_toTopOf="@+id/registerBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/editPassword"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
