@@ -15,7 +15,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:background="#ba2d49"
             android:padding="20dp">
 
@@ -33,8 +33,9 @@
                 android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@+id/user_profile_image"
                 android:includeFontPadding="false"
-                android:text="USER PROFILE"
-                android:textSize="20sp" />
+                android:text="ANUSHKA HAPUKOTUWA"
+                android:textSize="21sp"
+                android:textStyle="bold"/>
 
         </RelativeLayout>
 
@@ -49,7 +50,7 @@
                 android:layout_height="125dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#ba2d49"
+                app:cardBackgroundColor="#ff4d70"
                 app:cardElevation="10dp">
 
                 <RelativeLayout
@@ -61,7 +62,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_centerHorizontal="true"
-                        android:src="@drawable/ic_baseline_email_24" />
+                        android:src="@drawable/ic_baseline_favorite_24" />
 
                     <TextView
                         android:id="@+id/editText"
@@ -69,7 +70,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:includeFontPadding="false"
-                        android:text="$123"
+                        android:text="123"
                         android:textSize="20sp" />
 
                     <TextView
@@ -78,8 +79,9 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/editText"
                         android:layout_centerHorizontal="true"
-                        android:text="balance"
-                        android:textSize="14sp" />
+                        android:text="Favourites"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -88,7 +90,7 @@
                 android:layout_height="125dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="#ba2d49"
+                app:cardBackgroundColor="#ff4d70"
                 app:cardElevation="10dp">
 
                 <RelativeLayout
@@ -100,7 +102,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_centerHorizontal="true"
-                        android:src="@drawable/ic_baseline_email_24" />
+                        android:src="@drawable/ic_baseline_menu_book_24" />
 
                     <TextView
                         android:id="@+id/editText3"
@@ -108,7 +110,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:includeFontPadding="false"
-                        android:text="$123"
+                        android:text="456"
                         android:textSize="20sp" />
 
                     <TextView
@@ -117,8 +119,9 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/editText3"
                         android:layout_centerHorizontal="true"
-                        android:text="balance"
-                        android:textSize="14sp" />
+                        android:text="My Recipes"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
@@ -133,14 +136,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:hint="Full name">
+                android:hint="First Name">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_phone_24"
+                    android:drawableLeft="@drawable/ic_baseline_person_24_dark"
                     android:drawablePadding="10dp"
                     android:text="Anushka" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="Last Name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_baseline_person_24_dark"
+                    android:drawablePadding="10dp"
+                    android:text="Hapukotuwa" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -154,9 +173,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_phone_24"
+                    android:drawableLeft="@drawable/ic_baseline_email_24_dark"
                     android:drawablePadding="10dp"
-                    android:text="john@gmail.com" />
+                    android:text="anushka@gmail.com" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -165,14 +184,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:hint="Full name">
+                android:hint="Password">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_phone_24"
+                    android:drawableLeft="@drawable/ic_baseline_lock_24"
                     android:drawablePadding="10dp"
-                    android:text="Anushka" />
+                    android:text="abc@123" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -181,7 +200,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ba2d49"
-                android:text="UPDATE" />
+                android:text="Update"
+                android:textSize="20dp"
+                android:elevation="10dp"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
