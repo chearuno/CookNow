@@ -9,17 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 public class UserLogin extends AppCompatActivity {
     private EditText userEmail, userPassword;
@@ -80,14 +76,6 @@ public class UserLogin extends AppCompatActivity {
 
                                 if (vender == null) {
 
-                                    FirebaseMessaging.getInstance().subscribeToTopic(userNew.getEmail())
-                                            .addOnCompleteListener(task -> {
-                                                String msg = "Welcome " + userNew.getEmail();
-
-                                                Log.e("TAG", msg);
-                                                Toast.makeText(UserLogin.this, msg, Toast.LENGTH_SHORT).show();
-                                            });
-
                                     Intent intent = new Intent(UserLogin.this, MainActivity.class);
                                     finish();
                                     startActivity(intent);
@@ -95,13 +83,6 @@ public class UserLogin extends AppCompatActivity {
 
                                 } else {
 
-                                    FirebaseMessaging.getInstance().subscribeToTopic("ToADMIN")
-                                            .addOnCompleteListener(task -> {
-                                                String msg = "Welcome " + userNew.getEmail();
-
-                                                Log.e("TAG", msg);
-                                                Toast.makeText(UserLogin.this, msg, Toast.LENGTH_SHORT).show();
-                                            });
 
                                     editor.putString("userIsVender", "YES");
 
