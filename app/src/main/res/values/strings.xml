@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Cook</string>
+    <string name="app_name">iChef</string>
     <string name="title_activity_main">Main</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

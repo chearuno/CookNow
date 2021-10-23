@@ -2,13 +2,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:paddingTop="?actionBarSize">
 
     <ListView
         android:id="@+id/shopping_listView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></ListView>
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="match_parent"
