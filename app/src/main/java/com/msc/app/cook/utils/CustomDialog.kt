@@ -13,7 +13,7 @@ import org.jetbrains.anko.*
 
 private const val ACTIVITY_PADDING = 16
 
-class CustomT5Dialog(ui: AnkoContext<View>) {
+class CustomDialog(ui: AnkoContext<View>) {
 
     var dialog: DialogInterface
     lateinit var secInputText: EditText

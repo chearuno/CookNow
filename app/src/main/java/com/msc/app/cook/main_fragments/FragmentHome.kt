@@ -162,7 +162,6 @@ class FragmentHome : Fragment() {
 
     private fun setDataList(categoryId: Int) {
         progressHUD!!.show()
-        db = FirebaseFirestore.getInstance()
         itemList.clear()
 
 
@@ -226,7 +225,8 @@ class FragmentHome : Fragment() {
                     }
                 }
         } else {
-            db!!.collection("Recipes").whereEqualTo("isPrivate", false).whereEqualTo("categoryId", categoryId)
+            db!!.collection("Recipes").whereEqualTo("isPrivate", false)
+                .whereEqualTo("categoryId", categoryId)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {

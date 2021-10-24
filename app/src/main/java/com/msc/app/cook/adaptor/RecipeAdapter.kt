@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -33,6 +34,7 @@ class RecipeAdapter(private val items: List<ItemRecipe>, private val context: Co
         var recipe: TextView = view.findViewById<View>(R.id.tv_recipe_name) as TextView
         var time: TextView = view.findViewById<View>(R.id.tv_time) as TextView
         var imageView: ImageView = view.findViewById<View>(R.id.iv_recipe) as ImageView
+        var imageViewPrivate: CardView = view.findViewById<View>(R.id.private_image) as CardView
 
     }
 
@@ -47,17 +49,17 @@ class RecipeAdapter(private val items: List<ItemRecipe>, private val context: Co
         val settings =
             context.getSharedPreferences("MyPrefsFile", 0)
         val gridCount = settings?.getInt("GRID_COUNT", 1) ?: 1
-        if(gridCount == 1){
+        if (gridCount == 1) {
             holder.recipe.textSize = 14F
             holder.time.textSize = 14F
             holder.time.visibility = View.VISIBLE
             holder.imageView.layoutParams.height = 600
-        }else if(gridCount == 2){
+        } else if (gridCount == 2) {
             holder.recipe.textSize = 12F
             holder.time.textSize = 12F
             holder.time.visibility = View.VISIBLE
             holder.imageView.layoutParams.height = 250
-        }else if(gridCount == 3){
+        } else if (gridCount == 3) {
             holder.recipe.textSize = 11F
             holder.time.visibility = View.GONE
             holder.imageView.layoutParams.height = 250
@@ -74,6 +76,13 @@ class RecipeAdapter(private val items: List<ItemRecipe>, private val context: Co
             .load(urlList.first())
             .apply(requestOptions)
             .into(holder.imageView)
+
+        val isPrivate = itemRecipe.fullData!!["isPrivate"] as Boolean
+        if (isPrivate) {
+            holder.imageViewPrivate.visibility = View.VISIBLE
+        } else {
+            holder.imageViewPrivate.visibility = View.GONE
+        }
     }
 
     override fun getItemCount(): Int {

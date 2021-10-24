@@ -18,7 +18,7 @@ import com.msc.app.cook.MainActivity
 import com.msc.app.cook.R
 import com.msc.app.cook.adaptor.SelectedImageAdapter
 import com.msc.app.cook.new_recipe.FragmentNewIngredients
-import com.msc.app.cook.utils.CustomT5Dialog
+import com.msc.app.cook.utils.CustomDialog
 import com.msc.app.cook.utils.Utils.alerterDialog
 import com.msc.app.cook.utils.Utils.toastError
 import kotlinx.android.synthetic.main.fragment_new_recipe.view.*
@@ -81,7 +81,7 @@ class FragmentNewRecipe : Fragment() {
                     putData["likes"] = 0
                     putData["createdBy"] = "Chethana Arunodh"
                     putData["description"] = view.recipe_description.text.toString()
-                    putData["isPrivate"] = false
+                    putData["isPrivate"] =  view.checkBox.isChecked
                     putData["prepare_time"] = view.txt_cooling_t.text.toString()
                     putData["createdDate"] =
                         SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().time)
@@ -141,7 +141,7 @@ class FragmentNewRecipe : Fragment() {
     fun displayCustomT5Dialog(view: View) {
         val t5DialogUi by lazy {
             requireActivity().contentView?.let {
-                CustomT5Dialog(AnkoContext.create(requireContext(), it))
+                CustomDialog(AnkoContext.create(requireContext(), it))
 
             }
         }
