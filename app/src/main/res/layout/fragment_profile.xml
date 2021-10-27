@@ -203,6 +203,7 @@
                     android:layout_height="wrap_content"
                     android:background="#ba2d49"
                     android:elevation="10dp"
+                    android:onClick="updateProfile"
                     android:text="Update"
                     android:textSize="20dp" />
             </LinearLayout>
