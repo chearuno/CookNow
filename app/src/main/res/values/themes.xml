@@ -74,4 +74,10 @@
         <item name="android:textColor">@color/colorTextDark</item>
         <item name="android:textAppearance">@style/Regular</item>
     </style>
+
+    <style name="Text14Pink">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="android:textColor">@color/colorPink</item>
+        <item name="android:textAppearance">@style/Regular</item>
+    </style>
 </resources>

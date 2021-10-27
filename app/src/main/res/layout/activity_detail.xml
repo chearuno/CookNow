@@ -138,6 +138,35 @@
                         android:gravity="center_vertical"
                         android:text="968" />
 
+                    <TextView
+                        android:id="@+id/tv_loved_user"
+                        style="@style/Text14Grey"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/space24"
+                        android:layout_marginTop="@dimen/space8"
+                        android:drawableLeft="@drawable/ic_favorite_selected"
+                        android:drawablePadding="@dimen/space8"
+                        android:gravity="center_vertical"
+                        android:text="968"
+                        android:textColor="@color/colorPink"
+                        android:visibility="gone" />
+
+
+                    <TextView
+                        android:id="@+id/tv_private"
+                        style="@style/Text14Grey"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/space24"
+                        android:layout_marginTop="@dimen/space8"
+                        android:drawableLeft="@drawable/ic_outline_lock_24"
+                        android:drawablePadding="@dimen/space8"
+                        android:gravity="center_vertical"
+                        android:text="Private"
+                        android:textColor="@color/colorPink"
+                        android:visibility="gone" />
+
                 </LinearLayout>
 
                 <TextView
@@ -260,6 +289,59 @@
                         android:background="@null"
                         android:nestedScrollingEnabled="false" />
                 </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space16"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/tv_share"
+                        style="@style/Text14Pink"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/space24"
+                        android:paddingRight="@dimen/space24"
+                        android:text="Update" />
+
+                    <View
+                        android:layout_width="1.5dp"
+                        android:layout_height="@dimen/space8"
+                        android:background="@color/colorPink" />
+
+                    <Button
+                        android:id="@+id/tv_comment"
+                        style="@style/Text14Pink"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/space24"
+                        android:paddingRight="@dimen/space24"
+                        android:text="Delete" />
+
+                    <View
+                        android:layout_width="1.5dp"
+                        android:layout_height="@dimen/space8"
+                        android:background="@color/colorPink" />
+
+                    <Button
+                        android:id="@+id/tv_rate"
+                        style="@style/Text14Pink"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/space24"
+                        android:paddingRight="@dimen/space24"
+                        android:text="Public" />
+                </LinearLayout>
             </LinearLayout>
         </FrameLayout>
 

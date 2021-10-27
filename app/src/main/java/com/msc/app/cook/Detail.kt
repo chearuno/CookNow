@@ -12,11 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.msc.app.cook.adaptor.ImageSliderAdapter
 import com.msc.app.cook.adaptor.PreparationAdapter
+import com.msc.app.cook.adaptor.RecipeAdapter
 import com.msc.app.cook.adaptor.ShoppingAdapter
 import com.msc.app.cook.models.ItemPreparation
+import com.msc.app.cook.models.ItemRecipe
 import com.msc.app.cook.models.ItemShopping
 import com.msc.app.cook.models.SliderItem
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
@@ -39,6 +43,8 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
     private var currentSarvingQty = 1
     private val itemShoppingList: ArrayList<ItemShopping> = ArrayList()
     private val itemShoppingListForQty: ArrayList<ItemShopping> = ArrayList()
+    private var db: FirebaseFirestore? = null
+    private var progressHUD: KProgressHUD? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +59,8 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
 
         val documentData: HashMap<String, Any> =
             intent.getSerializableExtra("DATA_OF_DOCUMENT") as HashMap<String, Any>
+
+        db = FirebaseFirestore.getInstance()
 
         collapsingToolbarLayout =
             findViewById<View>(R.id.collapsing_toolbar) as CollapsingToolbarLayout
@@ -204,6 +212,10 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
             mAdapter!!.notifyDataSetChanged()
         }
 
+        tv_comment.setOnClickListener {
+            deleteItem()
+        }
+
     }
 
     override fun onItemClicked(position: Int) {}
@@ -214,6 +226,24 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
 
     private fun toggleSelection(position: Int) {
         mAdapterPreparation!!.toggleSelection(position)
+    }
+
+    private fun deleteItem(){
+        progressHUD!!.show()
+
+        db!!.collection("Recipes").whereEqualTo("isPrivate", false)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    progressHUD!!.dismiss()
+
+
+                } else {
+                    Log.e("Doc", "Error getting documents: ", task.exception)
+                    progressHUD!!.dismiss()
+
+                }
+            }
     }
 
 }
