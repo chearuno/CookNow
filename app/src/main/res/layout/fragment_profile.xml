@@ -29,6 +29,7 @@
                     android:src="@drawable/profpicavtr" />
 
                 <TextView
+                    android:id="@+id/userFullName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -67,19 +68,18 @@
                             android:src="@drawable/ic_baseline_favorite_24" />
 
                         <TextView
-                            android:id="@+id/editText"
+                            android:id="@+id/favCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:includeFontPadding="false"
-                            android:text="123"
                             android:textSize="20sp" />
 
                         <TextView
-                            android:id="@+id/editText1"
+                            android:id="@+id/favTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/editText"
+                            android:layout_below="@+id/favCount"
                             android:layout_centerHorizontal="true"
                             android:text="Favourites"
                             android:textSize="16sp"
@@ -107,19 +107,18 @@
                             android:src="@drawable/ic_baseline_menu_book_24" />
 
                         <TextView
-                            android:id="@+id/editText3"
+                            android:id="@+id/myRecipesCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:includeFontPadding="false"
-                            android:text="456"
                             android:textSize="20sp" />
 
                         <TextView
-                            android:id="@+id/editText4"
+                            android:id="@+id/myRecipesTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/editText3"
+                            android:layout_below="@+id/myRecipesCount"
                             android:layout_centerHorizontal="true"
                             android:text="My Recipes"
                             android:textSize="16sp"
@@ -141,11 +140,11 @@
                     android:hint="First Name">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/userFirstName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_baseline_person_24_dark"
-                        android:drawablePadding="10dp"
-                        android:text="Anushka" />
+                        android:drawablePadding="10dp" />
 
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -157,11 +156,11 @@
                     android:hint="Last Name">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/userLastName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_baseline_person_24_dark"
-                        android:drawablePadding="10dp"
-                        android:text="Hapukotuwa" />
+                        android:drawablePadding="10dp" />
 
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -173,11 +172,11 @@
                     android:hint="Email">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/userEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_baseline_email_24_dark"
-                        android:drawablePadding="10dp"
-                        android:text="anushka@gmail.com" />
+                        android:drawablePadding="10dp" />
 
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -189,16 +188,17 @@
                     android:hint="Password">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/userPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/ic_baseline_lock_24"
-                        android:drawablePadding="10dp"
-                        android:text="abc@123" />
+                        android:drawableLeft="@drawable/ic_baseline_lock_24_dark"
+                        android:drawablePadding="10dp" />
 
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
+                    android:id="@+id/updateBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#ba2d49"

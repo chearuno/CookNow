@@ -287,7 +287,8 @@
                     android:text="OPEN SHOPPING LIST"
                     android:textAppearance="@style/Regular"
                     android:textColor="@color/colorPink"
-                    android:textSize="@dimen/h3" />
+                    android:textSize="@dimen/h3"
+                    android:onClick="openShoppingList"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
