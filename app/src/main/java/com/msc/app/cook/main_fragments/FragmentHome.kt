@@ -25,6 +25,7 @@ import com.msc.app.cook.models.ItemRecipe
 import com.msc.app.cook.utils.Utils.categoryItemList
 import java.io.Serializable
 
+
 class FragmentHome : Fragment() {
 
     private var mAdapter: RecipeAdapter? = null
@@ -98,7 +99,7 @@ class FragmentHome : Fragment() {
                             "DATA_OF_DOCUMENT",
                             itemList[position].fullData as Serializable?
                         )
-                        startActivity(intent)
+                        startActivityForResult(intent, 100)
                     }
 
                     override fun onLongClick(view: View?, position: Int) {}
@@ -286,7 +287,7 @@ class FragmentHome : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 101) {
+        if (requestCode == 101 || requestCode == 100) {
             var anySelectedCategory = 0
             for (i in categoryItemList.indices) {
                 if (categoryItemList[i].selected) {

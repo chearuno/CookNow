@@ -1,5 +1,7 @@
 package com.msc.app.cook
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +11,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -17,10 +20,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.msc.app.cook.adaptor.ImageSliderAdapter
 import com.msc.app.cook.adaptor.PreparationAdapter
-import com.msc.app.cook.adaptor.RecipeAdapter
 import com.msc.app.cook.adaptor.ShoppingAdapter
 import com.msc.app.cook.models.ItemPreparation
-import com.msc.app.cook.models.ItemRecipe
 import com.msc.app.cook.models.ItemShopping
 import com.msc.app.cook.models.SliderItem
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
@@ -45,6 +46,7 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
     private val itemShoppingListForQty: ArrayList<ItemShopping> = ArrayList()
     private var db: FirebaseFirestore? = null
     private var progressHUD: KProgressHUD? = null
+    var documentData: HashMap<String, Any> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,10 +59,17 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
 
         storage = FirebaseStorage.getInstance()
 
-        val documentData: HashMap<String, Any> =
+        documentData =
             intent.getSerializableExtra("DATA_OF_DOCUMENT") as HashMap<String, Any>
 
         db = FirebaseFirestore.getInstance()
+
+        progressHUD = KProgressHUD.create(this)
+            .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+            .setLabel("Please wait")
+            .setCancellable(true)
+            .setAnimationSpeed(2)
+            .setDimAmount(0.5f)
 
         collapsingToolbarLayout =
             findViewById<View>(R.id.collapsing_toolbar) as CollapsingToolbarLayout
@@ -93,6 +102,30 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
 
         recyclerView = findViewById<View>(R.id.recyclerShopping) as RecyclerView
 
+        val userId = documentData["userId"].toString()
+        val isPrivate = documentData["isPrivate"]
+
+        val prefs: SharedPreferences = getSharedPreferences("MyPrefsFile", 0)
+        val userIdLogged = prefs.getString("loggedUserId", "").toString()
+
+        if (userId == userIdLogged) {
+            ll_action.visibility = View.VISIBLE
+            if (isPrivate as Boolean) {
+                tv_public.text = "Private"
+            } else {
+                tv_public.text = "Public"
+            }
+        } else {
+            ll_action.visibility = View.GONE
+        }
+
+        if (isPrivate as Boolean) {
+            private_image.visibility = View.VISIBLE
+            tv_private_icon.visibility = View.VISIBLE
+        } else {
+            private_image.visibility = View.GONE
+            tv_private_icon.visibility = View.GONE
+        }
 
         shoppingList.forEach {
 
@@ -212,9 +245,22 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
             mAdapter!!.notifyDataSetChanged()
         }
 
-        tv_comment.setOnClickListener {
+        tv_delete.setOnClickListener {
             deleteItem()
         }
+
+        tv_public.setOnClickListener {
+            makePrivateItem()
+        }
+
+        tv_private_icon.setOnClickListener {
+            makePrivateItem()
+        }
+
+        tv_update.setOnClickListener {
+            updateItem()
+        }
+
 
     }
 
@@ -228,22 +274,104 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
         mAdapterPreparation!!.toggleSelection(position)
     }
 
-    private fun deleteItem(){
-        progressHUD!!.show()
+    private fun deleteItem() {
 
-        db!!.collection("Recipes").whereEqualTo("isPrivate", false)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    progressHUD!!.dismiss()
+        SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+            .setTitleText("Are you sure?")
+            .setContentText("Won't be able to recover this recipe!")
+            .setCancelText("Cancel")
+            .setConfirmText("Delete")
+            .showCancelButton(true)
 
+            .setCancelClickListener { sDialog ->
+                sDialog.dismissWithAnimation()
 
-                } else {
-                    Log.e("Doc", "Error getting documents: ", task.exception)
-                    progressHUD!!.dismiss()
-
-                }
             }
+            .setConfirmClickListener { sDialog ->
+
+                progressHUD!!.show()
+
+                db!!.collection("Recipes").document(documentData["id"].toString())
+                    .delete()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            progressHUD!!.dismiss()
+                            sDialog
+                                .setTitleText("Deleted!")
+                                .setContentText("Your recipe file has been deleted!")
+                                .setConfirmText("OK")
+                                .setConfirmClickListener {
+                                    finish()
+                                }
+                                .showCancelButton(false)
+                                .changeAlertType(SweetAlertDialog.SUCCESS_TYPE)
+
+                        } else {
+                            Log.e("Doc", "Error getting documents: ", task.exception)
+                            progressHUD!!.dismiss()
+
+                        }
+                    }
+            }
+            .show()
+
+    }
+
+    private fun makePrivateItem() {
+
+        val isPrivate = documentData["isPrivate"] as Boolean
+        var message = "Do yo wan to make this private"
+        if (isPrivate) {
+            message = "Do yo wan to make this public"
+        }
+
+        SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+            .setTitleText("Alert!")
+            .setContentText(message)
+            .setCancelText("Cancel")
+            .setConfirmText("Yes")
+            .showCancelButton(true)
+
+            .setCancelClickListener { sDialog ->
+                sDialog.dismissWithAnimation()
+
+            }
+            .setConfirmClickListener { sDialog ->
+
+                progressHUD!!.show()
+
+
+                db!!.collection("Recipes").document(documentData["id"].toString())
+                    .update("isPrivate", !isPrivate)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            progressHUD!!.dismiss()
+                            sDialog
+                                .setTitleText("Done!")
+                                .setContentText("Your recipe file has been changed!")
+                                .setConfirmText("OK")
+                                .setConfirmClickListener {
+                                    finish()
+                                }
+                                .showCancelButton(false)
+                                .changeAlertType(SweetAlertDialog.SUCCESS_TYPE)
+
+                        } else {
+                            Log.e("Doc", "Error getting documents: ", task.exception)
+                            progressHUD!!.dismiss()
+                        }
+                    }
+            }
+            .show()
+
+
+    }
+
+    private fun updateItem() {
+
+        val intent = Intent(this, UpdateActivity::class.java)
+        intent.putExtra("dsdssd", "message")
+        startActivity(intent)
     }
 
 }

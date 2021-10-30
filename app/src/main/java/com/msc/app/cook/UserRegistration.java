@@ -2,12 +2,15 @@ package com.msc.app.cook;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,22 +24,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+
+import es.dmoral.toasty.Toasty;
 
 public class UserRegistration extends AppCompatActivity {
     private EditText InputUserName, InputUserEmail, InputUserPassword;
     private Button CreateUserBtn;
     private ProgressDialog loadingBar;
-
-    private FirebaseDatabase db = FirebaseDatabase.getInstance();
-    private DatabaseReference root = db.getReference().child("Users");
+    private FirebaseFirestore db;
 
     public ImageView pick;
     public static final int CAMERA_REQUEST = 100;
@@ -52,6 +55,8 @@ public class UserRegistration extends AppCompatActivity {
         cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         pick = findViewById(R.id.profpic);
+
+        db = FirebaseFirestore.getInstance();
 
         pick.setOnClickListener(v -> {
             int picd = 0;
@@ -174,47 +179,70 @@ public class UserRegistration extends AppCompatActivity {
 
     private void ValidaDetails(final String name, final String email, final String password) {
 
-        final DatabaseReference RootRef;
-        RootRef = FirebaseDatabase.getInstance().getReference();
 
-        RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!(dataSnapshot.child("Users").child(email).exists())) {
+        db.collection("User").whereEqualTo("email", email)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
 
-                    HashMap<String, Object> userdataMap = new HashMap<>();
-                    userdataMap.put("email", email);
-                    userdataMap.put("password", password);
-                    userdataMap.put("name", name);
+                        if (task.getResult() == null || task.getResult().isEmpty()) {
 
-                    RootRef.child("Users").child(email).updateChildren(userdataMap)
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(UserRegistration.this, "Congratulations, you have successfully created your personal iChef account", Toast.LENGTH_SHORT).show();
-                                    loadingBar.dismiss();
+                            int lowerLimit = 100000;
+                            int upperLimit = 999999;
+                            Random r = new Random();
+                            int documentId = lowerLimit + (r.nextInt() * (upperLimit - lowerLimit));
+                            ArrayList<String> favList = new ArrayList();
+                            String docIdSting = String.valueOf(documentId);
 
-                                    Intent intent = new Intent(UserRegistration.this, UserLogin.class);
-                                    startActivity(intent);
+                            HashMap<String, Object> userdataMap = new HashMap<>();
+                            userdataMap.put("email", email);
+                            userdataMap.put("password", password);
+                            userdataMap.put("firstName", name);
+                            userdataMap.put("lastName", "");
+                            userdataMap.put("id", documentId);
+                            userdataMap.put("favourites", favList);
 
-                                } else {
-                                    loadingBar.dismiss();
-                                    Toast.makeText(UserRegistration.this, "Ummmm...Seems there is a network error, please try again", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                } else {
-                    Toast.makeText(UserRegistration.this, email + "is already used by some user, Please register with another email.", Toast.LENGTH_SHORT).show();
-                    loadingBar.dismiss();
+                            db.collection("User").document(docIdSting)
+                                    .set(userdataMap)
+                                    .addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful()) {
+                                            Toast.makeText(UserRegistration.this, "Congratulations, you have successfully created your personal iChef account", Toast.LENGTH_SHORT).show();
+                                            loadingBar.dismiss();
 
-                    Intent intent = new Intent(UserRegistration.this, UserLogin.class);
-                    startActivity(intent);
-                }
-            }
+                                            SharedPreferences.Editor editor = getSharedPreferences("MyPrefsFile", 0).edit();
+                                            editor.putString("loggedUserFirstName", name);
+                                            editor.putString("loggedUserLastName", "");
+                                            editor.putString("loggedUserEmail", email);
+                                            editor.putString("loggedUserId", docIdSting);
+                                            editor.putString("fav_set",  "");
 
-            @Override
-            public void onCancelled(DatabaseError error) {
+                                            Intent intent = new Intent(UserRegistration.this, MainActivity.class);
+                                            startActivity(intent);
 
-            }
-        });
+                                        } else {
+                                            loadingBar.dismiss();
+                                            Toast.makeText(UserRegistration.this, "Ummmm...Seems there is a network error, please try again", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> toastError("Data writing Failed", UserRegistration.this));
+                        } else {
+                            Toast.makeText(UserRegistration.this, email + "is already used by some user, Please register with another email.", Toast.LENGTH_SHORT).show();
+                            loadingBar.dismiss();
+
+                            Intent intent = new Intent(UserRegistration.this, UserLogin.class);
+                            startActivity(intent);
+                        }
+
+                    } else {
+                        Log.d("Doc", "Error getting documents: ", task.getException());
+                        toastError("Error getting documents", UserRegistration.this);
+                    }
+                });
+    }
+
+
+    void toastError(String title, Context context) {
+        Toasty.error(context, title, Toast.LENGTH_LONG, true).show();
     }
 
     public void btn_userLoginForm(View view) {

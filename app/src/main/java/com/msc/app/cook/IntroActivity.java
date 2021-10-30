@@ -1,6 +1,7 @@
 package com.msc.app.cook;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -113,7 +114,15 @@ public class IntroActivity extends AppCompatActivity {
 
     private void launchHomeScreen() {
         prefManager.setFirstTimeLaunch(false);
-        startActivity(new Intent(IntroActivity.this, UserRegistration.class));
+
+        SharedPreferences prefs = getSharedPreferences("MyPrefsFile", 0);
+        String isUserLogged = prefs.getString("loggedUserId", "");
+
+        if (isUserLogged.equals("")) {
+            startActivity(new Intent(IntroActivity.this, UserRegistration.class));
+        } else {
+            startActivity(new Intent(IntroActivity.this, MainActivity.class));
+        }
         finish();
     }
 

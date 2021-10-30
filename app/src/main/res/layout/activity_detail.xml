@@ -27,23 +27,52 @@
             app:expandedTitleTextAppearance="@style/Text22Semi"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <com.smarteist.autoimageslider.SliderView
-                android:id="@+id/imageSlider"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
-                app:layout_collapseMode="parallax"
-                app:sliderAnimationDuration="600"
-                app:sliderAutoCycleDirection="back_and_forth"
-                app:sliderIndicatorAnimationDuration="600"
-                app:sliderIndicatorEnabled="true"
-                app:sliderIndicatorGravity="center_horizontal|bottom"
-                app:sliderIndicatorMargin="15dp"
-                app:sliderIndicatorOrientation="horizontal"
-                app:sliderIndicatorPadding="3dp"
-                app:sliderIndicatorRadius="2dp"
-                app:sliderIndicatorSelectedColor="#5A5A5A"
-                app:sliderIndicatorUnselectedColor="#FFF"
-                app:sliderScrollTimeInSec="1" />
+                android:layout_height="400dp">
+
+                <com.smarteist.autoimageslider.SliderView
+                    android:id="@+id/imageSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    app:layout_collapseMode="parallax"
+                    app:sliderAnimationDuration="600"
+                    app:sliderAutoCycleDirection="back_and_forth"
+                    app:sliderIndicatorAnimationDuration="600"
+                    app:sliderIndicatorEnabled="true"
+                    app:sliderIndicatorGravity="center_horizontal"
+                    app:sliderIndicatorMargin="15dp"
+                    app:sliderIndicatorOrientation="horizontal"
+                    app:sliderIndicatorPadding="3dp"
+                    app:sliderIndicatorRadius="2dp"
+                    app:sliderIndicatorSelectedColor="#5A5A5A"
+                    app:sliderIndicatorUnselectedColor="#FFF"
+                    app:sliderScrollTimeInSec="1" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/private_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone">
+
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="2dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:layout_marginBottom="2dp"
+                        app:srcCompat="@drawable/ic_baseline_lock_24" />
+
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -154,7 +183,7 @@
 
 
                     <TextView
-                        android:id="@+id/tv_private"
+                        android:id="@+id/tv_private_icon"
                         style="@style/Text14Grey"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -297,10 +326,11 @@
                     android:layout_marginTop="@dimen/space16"
                     android:background="@android:color/transparent"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <Button
-                        android:id="@+id/tv_share"
+                        android:id="@+id/tv_update"
                         style="@style/Text14Pink"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -316,7 +346,7 @@
                         android:background="@color/colorPink" />
 
                     <Button
-                        android:id="@+id/tv_comment"
+                        android:id="@+id/tv_delete"
                         style="@style/Text14Pink"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -332,7 +362,7 @@
                         android:background="@color/colorPink" />
 
                     <Button
-                        android:id="@+id/tv_rate"
+                        android:id="@+id/tv_public"
                         style="@style/Text14Pink"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

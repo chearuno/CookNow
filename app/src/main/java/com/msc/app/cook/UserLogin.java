@@ -3,7 +3,6 @@ package com.msc.app.cook;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,18 +10,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class UserLogin extends AppCompatActivity {
     private EditText userEmail, userPassword;
     private Button btnLogin;
-    private DatabaseReference ref;
-    public static final String MY_PREFS_NAME = "UserLogin";
-    boolean userFound = false;
+    private FirebaseFirestore db;
 
 
     @Override
@@ -30,86 +29,40 @@ public class UserLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
 
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String name = prefs.getString("userEmail", "");
-        if (!name.equals("")) {
-
-            String isVendorLogged = prefs.getString("userIsVender", "");
-            if (isVendorLogged.equals("")) {
-                startActivity(new Intent(UserLogin.this, MainActivity.class));
-                finish();
-            } else {
-                startActivity(new Intent(UserLogin.this, BaseActivity.class));
-                finish();
-            }
-        }
-
         userEmail = findViewById(R.id.editEmailAddress);
         userPassword = findViewById(R.id.editPassword);
         btnLogin = findViewById(R.id.loginBtn);
-        ref = FirebaseDatabase.getInstance().getReference();
+        db = FirebaseFirestore.getInstance();
 
-        btnLogin.setOnClickListener((view) -> {
+        btnLogin.setOnClickListener((view) ->
+                db.collection("User").whereEqualTo("email", userEmail.getText().toString()).whereEqualTo("password", userPassword.getText().toString())
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
 
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("Users");
-            mDatabase.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot datas : dataSnapshot.getChildren()) {
+                                if (task.getResult() == null || task.getResult().isEmpty()) {
+                                    Toast.makeText(UserLogin.this, "User not found", Toast.LENGTH_LONG).show();
+                                } else {
+                                    QuerySnapshot querySnapshot = task.getResult();
+                                    Map<String, Object> document = querySnapshot.getDocuments().get(0).getData();
 
-                        final Users userNew = datas.getValue(Users.class);
-                        String emailText = userNew.getEmail();
+                                    SharedPreferences.Editor editor = getSharedPreferences("MyPrefsFile", 0).edit();
 
-                        if (emailText.equals(userEmail.getText().toString().trim())) {
+                                    editor.putString("loggedUserFirstName", document.get("firstName").toString());
+                                    editor.putString("loggedUserLastName", document.get("lastName").toString());
+                                    editor.putString("loggedUserEmail", document.get("email").toString());
+                                    editor.putString("loggedUserId", document.get("id").toString());
+                                    editor.putString("fav_set",  document.get("favList").toString());
 
-                            userFound = true;
-                            String password = userNew.getPassword();
-                            String vender = userNew.getAdmin();
-
-                            if (password.equals(userPassword.getText().toString().trim())) {
-
-                                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                                editor.putString("loggedUserName", userNew.getName());
-                                editor.putString("loggedUserEmail", userNew.getEmail());
-
-                                Log.e("TAG", dataSnapshot.getKey());
-
-                                if (vender == null) {
 
                                     Intent intent = new Intent(UserLogin.this, MainActivity.class);
                                     finish();
                                     startActivity(intent);
                                     editor.apply();
 
-                                } else {
-
-
-                                    editor.putString("userIsVender", "YES");
-
-                                    Intent intent = new Intent(UserLogin.this, BaseActivity.class);
-                                    finish();
-                                    startActivity(intent);
-                                    editor.apply();
-
                                 }
-
-                            } else {
-                                Toast.makeText(UserLogin.this, "Password is wrong", Toast.LENGTH_LONG).show();
                             }
-                        }
-                    }
-
-                    if (!userFound) {
-                        Toast.makeText(UserLogin.this, "User not found", Toast.LENGTH_LONG).show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Toast.makeText(UserLogin.this, "No internet found", Toast.LENGTH_LONG).show();
-                }
-            });
-        });
+                        }));
     }
 
     public void btn_userRegForm(View view) {

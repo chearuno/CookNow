@@ -53,6 +53,7 @@ dependencies {
     implementation 'com.github.GrenderG:Toasty:1.5.2'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.github.f0ris.sweetalert:library:1.6.2'
 
     implementation 'com.google.firebase:firebase-auth:21.0.1'
     implementation 'com.google.firebase:firebase-database:20.0.2'

@@ -3,6 +3,7 @@ package com.msc.app.cook.main_fragments
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -97,7 +98,7 @@ class FragmentFavouriteRecipes : Fragment() {
                             "DATA_OF_DOCUMENT",
                             itemList[position].fullData as Serializable?
                         )
-                        startActivity(intent)
+                        startActivityForResult(intent, 100)
                     }
 
                     override fun onLongClick(view: View?, position: Int) {}
@@ -164,119 +165,147 @@ class FragmentFavouriteRecipes : Fragment() {
         db = FirebaseFirestore.getInstance()
         itemList.clear()
 
-        val asas: ArrayList<Int> = ArrayList()
-        asas.add(30000)
-        asas.add(10293)
-        asas.add(22334)
 
-        asas.forEach {
+        val prefs: SharedPreferences =
+            requireActivity().getSharedPreferences("MyPrefsFile", 0)
+        val favouriteSet = prefs.getString("fav_set", "").toString()
 
-            if (categoryId == 0) {
+        val temp = favouriteSet.split(",")
 
-                db!!.collection("Recipes").whereEqualTo("id", it)
-                    .get()
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-
-                            for (document in task.result!!) {
-
-                                Log.e("Doc", document.id)
-                                val documentData = document.data
-                                val title = documentData["name"]
-                                val id = documentData["id"]
-                                val preparationTime = documentData["prepare_time"]
-                                val image: ArrayList<*> = documentData["images"] as ArrayList<*>
-
-                                val storageRef = storage!!.reference
-
-                                val downloadRef = storageRef.child("RecipeImages/${image.first()}")
-
-                                downloadRef.downloadUrl.addOnSuccessListener { uri ->
-                                    Log.e("Doc1", " => $uri")
-                                    val imageURI = uri.toString()
-                                    val item = ItemRecipe()
-                                    item.recipe = title as String?
-                                    item.time = preparationTime as String?
-                                    item.id = id as Long?
-                                    item.img = imageURI
-                                    item.fullData = documentData
-                                    itemList.add(item)
-                                    mAdapter =
-                                        activity?.let { RecipeAdapter(itemList, requireContext()) }
-                                    recyclerView!!.adapter = mAdapter
-                                    progressHUD!!.dismiss()
-                                }
-                                    .addOnFailureListener {
-                                        Log.e("Doc", "Error getting Data: ")
-                                        progressHUD!!.dismiss()
-                                    }
-                            }
-
-
-                        } else {
-                            Log.e("Doc", "Error getting documents: ", task.exception)
-                            progressHUD!!.dismiss()
-                            emptyView?.visibility = View.VISIBLE
-                            recyclerView?.visibility = View.GONE
-                        }
-                    }
+        if (temp.isNullOrEmpty() || temp.equals("")) {
+            progressHUD!!.dismiss()
+            emptyView?.visibility = View.VISIBLE
+            recyclerView?.visibility = View.GONE
+        } else {
+            if (temp[0] == "") {
+                progressHUD!!.dismiss()
+                emptyView?.visibility = View.VISIBLE
+                recyclerView?.visibility = View.GONE
             } else {
+                temp.forEach {
 
-                db!!.collection("Recipes").whereEqualTo("id", it)
-                    .whereEqualTo("categoryId", categoryId)
-                    .get()
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
+                    if (categoryId == 0) {
 
-                            for (document in task.result!!) {
+                        db!!.collection("Recipes").whereEqualTo("id", it.toLong())
+                            .get()
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
 
-                                Log.e("Doc", document.id)
-                                val documentData = document.data
-                                val title = documentData["name"]
-                                val id = documentData["id"]
-                                val preparationTime = documentData["prepare_time"]
-                                val image: ArrayList<*> = documentData["images"] as ArrayList<*>
+                                    for (document in task.result!!) {
 
-                                val storageRef = storage!!.reference
+                                        Log.e("Doc", document.id)
+                                        val documentData = document.data
+                                        val title = documentData["name"]
+                                        val id = documentData["id"]
+                                        val preparationTime = documentData["prepare_time"]
+                                        val image: ArrayList<*> =
+                                            documentData["images"] as ArrayList<*>
 
-                                val downloadRef = storageRef.child("RecipeImages/${image.first()}")
+                                        val storageRef = storage!!.reference
 
-                                downloadRef.downloadUrl.addOnSuccessListener { uri ->
-                                    Log.e("Doc1", " => $uri")
-                                    val imageURI = uri.toString()
-                                    val item = ItemRecipe()
-                                    item.recipe = title as String?
-                                    item.time = preparationTime as String?
-                                    item.id = id as Long?
-                                    item.img = imageURI
-                                    item.fullData = documentData
-                                    itemList.add(item)
-                                    mAdapter =
-                                        activity?.let { RecipeAdapter(itemList, requireContext()) }
-                                    recyclerView!!.adapter = mAdapter
-                                    progressHUD!!.dismiss()
-                                }
-                                    .addOnFailureListener {
-                                        Log.e("Doc", "Error getting Data: ")
-                                        progressHUD!!.dismiss()
+                                        val downloadRef =
+                                            storageRef.child("RecipeImages/${image.first()}")
+
+                                        downloadRef.downloadUrl.addOnSuccessListener { uri ->
+                                            Log.e("Doc1", " => $uri")
+                                            val imageURI = uri.toString()
+                                            val item = ItemRecipe()
+                                            item.recipe = title as String?
+                                            item.time = preparationTime as String?
+                                            item.id = id as Long?
+                                            item.img = imageURI
+                                            item.fullData = documentData
+                                            itemList.add(item)
+                                            mAdapter =
+                                                activity?.let {
+                                                    RecipeAdapter(
+                                                        itemList,
+                                                        requireContext()
+                                                    )
+                                                }
+                                            recyclerView!!.adapter = mAdapter
+                                            progressHUD!!.dismiss()
+                                        }
+                                            .addOnFailureListener {
+                                                Log.e("Doc", "Error getting Data: ")
+                                                progressHUD!!.dismiss()
+                                            }
                                     }
+
+
+                                } else {
+                                    Log.e("Doc", "Error getting documents: ", task.exception)
+                                    progressHUD!!.dismiss()
+                                    emptyView?.visibility = View.VISIBLE
+                                    recyclerView?.visibility = View.GONE
+                                }
                             }
+                    } else {
+
+                        db!!.collection("Recipes").whereEqualTo("id", it)
+                            .whereEqualTo("categoryId", categoryId)
+                            .get()
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+
+                                    for (document in task.result!!) {
+
+                                        Log.e("Doc", document.id)
+                                        val documentData = document.data
+                                        val title = documentData["name"]
+                                        val id = documentData["id"]
+                                        val preparationTime = documentData["prepare_time"]
+                                        val image: ArrayList<*> =
+                                            documentData["images"] as ArrayList<*>
+
+                                        val storageRef = storage!!.reference
+
+                                        val downloadRef =
+                                            storageRef.child("RecipeImages/${image.first()}")
+
+                                        downloadRef.downloadUrl.addOnSuccessListener { uri ->
+                                            Log.e("Doc1", " => $uri")
+                                            val imageURI = uri.toString()
+                                            val item = ItemRecipe()
+                                            item.recipe = title as String?
+                                            item.time = preparationTime as String?
+                                            item.id = id as Long?
+                                            item.img = imageURI
+                                            item.fullData = documentData
+                                            itemList.add(item)
+                                            mAdapter =
+                                                activity?.let {
+                                                    RecipeAdapter(
+                                                        itemList,
+                                                        requireContext()
+                                                    )
+                                                }
+                                            recyclerView!!.adapter = mAdapter
+                                            progressHUD!!.dismiss()
+                                        }
+                                            .addOnFailureListener {
+                                                Log.e("Doc", "Error getting Data: ")
+                                                progressHUD!!.dismiss()
+                                            }
+                                    }
 
 
-                        } else {
-                            Log.e("Doc", "Error getting documents: ", task.exception)
-                            progressHUD!!.dismiss()
-                            emptyView?.visibility = View.VISIBLE
-                            recyclerView?.visibility = View.GONE
-                        }
+                                } else {
+                                    Log.e("Doc", "Error getting documents: ", task.exception)
+                                    progressHUD!!.dismiss()
+                                    emptyView?.visibility = View.VISIBLE
+                                    recyclerView?.visibility = View.GONE
+                                }
+                            }
                     }
+                }
             }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 101) {
+        if (requestCode == 101 || requestCode == 100) {
             var anySelectedCategory = 0
             for (i in Utils.categoryItemList.indices) {
                 if (Utils.categoryItemList[i].selected) {

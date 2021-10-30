@@ -1,4 +1,4 @@
-package com.msc.app.cook.main_fragments
+package com.msc.app.cook.new_recipe
 
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
@@ -8,15 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.msc.app.cook.ImagesActivity
 import com.msc.app.cook.ImagesActivity.selectedImageList
-import com.msc.app.cook.MainActivity
 import com.msc.app.cook.R
 import com.msc.app.cook.adaptor.SelectedImageAdapter
-import com.msc.app.cook.new_recipe.FragmentNewIngredients
 import com.msc.app.cook.utils.CustomDialog
 import com.msc.app.cook.utils.Utils.alerterDialog
 import com.msc.app.cook.utils.Utils.toastError
@@ -27,7 +26,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class FragmentNewRecipe : Fragment() {
+class FragmentEditRecipe : Fragment() {
 
     var selectedImageRecyclerView: RecyclerView? = null
     var selectedImageAdapter: SelectedImageAdapter? = null
@@ -42,14 +41,9 @@ class FragmentNewRecipe : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_new_recipe, container, false)
-        (activity as MainActivity?)!!.setupToolbar(
-            R.id.toolbar,
-            "NEW RECIPE",
-            R.color.colorPink,
-            R.color.colorWhiteTrans,
-            R.drawable.ic_burger
-        )
+        val view = inflater.inflate(R.layout.fragment_edit_recipe, container, false)
+
+        (activity as AppCompatActivity).supportActionBar?.title = "EDIT RECIPE"
 
         selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view)
 
@@ -90,7 +84,7 @@ class FragmentNewRecipe : Fragment() {
                     putData["createdDate"] =
                         SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().time)
 
-                    val tempFragment = FragmentNewIngredients()
+                    val tempFragment = FragmentEditIngredients()
                     val bundle = Bundle()
                     bundle.putSerializable("RECIPE_DATA", putData)
                     tempFragment.arguments = bundle

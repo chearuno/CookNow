@@ -11,7 +11,7 @@ import es.dmoral.toasty.Toasty
 
 object Utils {
 
-     var categoryItemList: ArrayList<ItemCategory> = ArrayList()
+    var categoryItemList: ArrayList<ItemCategory> = ArrayList()
 
     fun alertDialog(title: String, message: String, context: Context) {
         val dialogBuilder = AlertDialog.Builder(context)

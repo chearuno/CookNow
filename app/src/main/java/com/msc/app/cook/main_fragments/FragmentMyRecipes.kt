@@ -3,6 +3,7 @@ package com.msc.app.cook.main_fragments
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -97,7 +98,7 @@ class FragmentMyRecipes : Fragment() {
                             "DATA_OF_DOCUMENT",
                             itemList[position].fullData as Serializable?
                         )
-                        startActivity(intent)
+                        startActivityForResult(intent, 100)
                     }
 
                     override fun onLongClick(view: View?, position: Int) {}
@@ -167,7 +168,11 @@ class FragmentMyRecipes : Fragment() {
 
         if (categoryId == 0) {
 
-            db!!.collection("Recipes").whereEqualTo("userId", 2)
+            val prefs: SharedPreferences =
+                requireActivity().getSharedPreferences("MyPrefsFile", 0)
+            val userId = prefs.getString("loggedUserId", "").toString()
+
+            db!!.collection("Recipes").whereEqualTo("userId", userId.toInt())
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -229,7 +234,11 @@ class FragmentMyRecipes : Fragment() {
                 }
         } else {
 
-            db!!.collection("Recipes").whereEqualTo("userId", 2)
+            val prefs: SharedPreferences =
+                requireActivity().getSharedPreferences("MyPrefsFile", 0)
+            val userId = prefs.getString("loggedUserId", "").toString()
+
+            db!!.collection("Recipes").whereEqualTo("userId", userId.toInt())
                 .whereEqualTo("categoryId", categoryId)
                 .get()
                 .addOnCompleteListener { task ->
@@ -295,7 +304,7 @@ class FragmentMyRecipes : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 101) {
+        if (requestCode == 101 || requestCode == 100) {
             var anySelectedCategory = 0
             for (i in Utils.categoryItemList.indices) {
                 if (Utils.categoryItemList[i].selected) {
