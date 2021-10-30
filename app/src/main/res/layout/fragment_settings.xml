@@ -1,41 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/recyclerView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="?actionBarSize" >
 
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="Layout Option.  Items per row"
+        android:textSize="16sp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_below="@id/textView9">
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="1" />
+            app:srcCompat="@drawable/ic_baseline_looks_one_24" />
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="2" />
+            app:srcCompat="@drawable/ic_baseline_looks_two_24" />
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="3" />
+            app:srcCompat="@drawable/ic_baseline_looks_3_24" />
+
     </LinearLayout>
 
     <Button
         android:id="@+id/button_logout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20sp"
         android:layout_marginTop="100dp"
+        android:layout_marginEnd="20dp"
         android:text="LogOut" />
 </RelativeLayout>

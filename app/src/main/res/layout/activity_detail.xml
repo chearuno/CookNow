@@ -280,15 +280,16 @@
                     android:nestedScrollingEnabled="false" />
 
                 <TextView
+                    android:id="@+id/textAddTOShoppingList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/space16"
                     android:layout_marginBottom="@dimen/space8"
-                    android:text="OPEN SHOPPING LIST"
+                    android:text="ADD TO SHOPPING LIST"
                     android:textAppearance="@style/Regular"
                     android:textColor="@color/colorPink"
                     android:textSize="@dimen/h3"
-                    android:onClick="openShoppingList"/>
+                   />
 
                 <ImageView
                     android:layout_width="wrap_content"

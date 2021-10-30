@@ -24,6 +24,7 @@ import com.msc.app.cook.adaptor.ShoppingAdapter
 import com.msc.app.cook.models.ItemPreparation
 import com.msc.app.cook.models.ItemShopping
 import com.msc.app.cook.models.SliderItem
+import com.msc.app.cook.utils.Utils.itemShoppingMainList
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
@@ -295,6 +296,9 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
             removeFavItem()
         }
 
+        textAddTOShoppingList.setOnClickListener {
+            addToShoppinList()
+        }
 
     }
 
@@ -401,6 +405,39 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
                     progressHUD!!.dismiss()
                 }
             }
+    }
+
+    private fun addToShoppinList() {
+
+        SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+            .setTitleText("Add To Shopping List")
+            .setContentText("Do you want to add items to shopping list?")
+            .setCancelText("No")
+            .setConfirmText("Yes")
+            .showCancelButton(true)
+
+            .setCancelClickListener { sDialog ->
+                sDialog.dismissWithAnimation()
+
+            }
+            .setConfirmClickListener { sDialog ->
+
+                itemShoppingMainList.addAll(itemShoppingList)
+                itemShoppingList
+
+                sDialog
+                    .setTitleText("Added!")
+                    .setContentText("Your shopping list has been updated!")
+                    .setConfirmText("OK")
+                    .setConfirmClickListener {
+                        finish()
+                    }
+                    .showCancelButton(false)
+                    .changeAlertType(SweetAlertDialog.SUCCESS_TYPE)
+
+            }
+            .show()
+
     }
 
     private fun deleteItem() {

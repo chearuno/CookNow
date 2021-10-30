@@ -2,24 +2,27 @@ package com.msc.app.cook.main_fragments
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.msc.app.cook.MainActivity
 import com.msc.app.cook.R
-import com.msc.app.cook.adaptor.ShoppingAdapter
 import com.msc.app.cook.adaptor.ShoppingListAdapter
-import com.msc.app.cook.models.ItemShopping
+import com.msc.app.cook.utils.Utils.itemShoppingMainList
 
 class FragmentShoppingList : Fragment() {
     private var recyclerView: RecyclerView? = null
     private var mAdapter: ShoppingListAdapter? = null
-    private val itemShoppingList: ArrayList<ItemShopping> = ArrayList()
+    private var emptyView: TextView? = null
+    private var clearButton: Button? = null
 
     override fun onCreate(a: Bundle?) {
         super.onCreate(a)
-        setHasOptionsMenu(true)
+        setHasOptionsMenu(false)
     }
 
     override fun onCreateView(
@@ -37,23 +40,21 @@ class FragmentShoppingList : Fragment() {
         )
 
         recyclerView = view.findViewById<View>(R.id.shoppingList) as RecyclerView
-        val itemShopping = ItemShopping()
-        itemShopping.name = "Sugar"
-        itemShopping.qty = 100
-        itemShopping.unit = "g"
+        emptyView = view.findViewById(R.id.empty_view)
+        clearButton = view.findViewById(R.id.clear)
 
-        val itemShopping2 = ItemShopping()
-        itemShopping2.name = "Flour"
-        itemShopping2.qty = 100
-        itemShopping2.unit = "g"
-
-        itemShoppingList.add(itemShopping)
-        itemShoppingList.add(itemShopping2)
-        mAdapter = ShoppingListAdapter(itemShoppingList, requireContext())
-        val mLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        mAdapter = ShoppingListAdapter(itemShoppingMainList, requireContext())
+        val mLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView!!.layoutManager = mLayoutManager
         recyclerView!!.itemAnimator = DefaultItemAnimator()
         recyclerView!!.adapter = mAdapter
+
+        toggleEmptyView()
+
+        clearButton!!.setOnClickListener {
+            addToShoppinList()
+        }
 
         return view
     }
@@ -63,7 +64,49 @@ class FragmentShoppingList : Fragment() {
         inflater.inflate(R.menu.menu_home, menu)
     }
 
-    init {
-        setHasOptionsMenu(true)
+    private fun toggleEmptyView() {
+        if (itemShoppingMainList.size == 0) {
+            emptyView!!.visibility = View.VISIBLE
+            recyclerView!!.visibility = View.GONE
+            clearButton!!.visibility = View.GONE
+        } else {
+            emptyView!!.visibility = View.GONE
+            recyclerView!!.visibility = View.VISIBLE
+            clearButton!!.visibility = View.VISIBLE
+        }
+    }
+
+    private fun addToShoppinList() {
+
+        SweetAlertDialog(requireContext(), SweetAlertDialog.WARNING_TYPE)
+            .setTitleText("Alert")
+            .setContentText("Do you want to clear shopping list?")
+            .setCancelText("No")
+            .setConfirmText("Yes")
+            .showCancelButton(true)
+
+            .setCancelClickListener { sDialog ->
+                sDialog.dismissWithAnimation()
+
+            }
+            .setConfirmClickListener { sDialog ->
+
+                itemShoppingMainList.clear()
+
+                toggleEmptyView()
+
+                sDialog
+                    .setTitleText("Done!")
+                    .setContentText("Your shopping list has been cleaned!")
+                    .setConfirmText("OK")
+                    .setConfirmClickListener {
+                        sDialog.dismissWithAnimation()
+                    }
+                    .showCancelButton(false)
+                    .changeAlertType(SweetAlertDialog.SUCCESS_TYPE)
+
+            }
+            .show()
+
     }
 }
