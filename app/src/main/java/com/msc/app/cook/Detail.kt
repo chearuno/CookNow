@@ -47,6 +47,7 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
     private var db: FirebaseFirestore? = null
     private var progressHUD: KProgressHUD? = null
     var documentData: HashMap<String, Any> = HashMap()
+    var userIdLogged = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,7 +96,6 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
         tv_desc.text = documentData["description"] as String?
         tv_author.text = "by ${documentData["createdBy"]}"
         tv_time.text = documentData["prepare_time"] as String?
-        tv_love.text = "${documentData["likes"]}"
 
         val preparation: ArrayList<*> = documentData["preparation"] as ArrayList<*>
         val shoppingList: ArrayList<*> = documentData["shopping_list"] as ArrayList<*>
@@ -106,7 +106,7 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
         val isPrivate = documentData["isPrivate"]
 
         val prefs: SharedPreferences = getSharedPreferences("MyPrefsFile", 0)
-        val userIdLogged = prefs.getString("loggedUserId", "").toString()
+        userIdLogged = prefs.getString("loggedUserId", "").toString()
 
         if (userId == userIdLogged) {
             ll_action.visibility = View.VISIBLE
@@ -126,6 +126,32 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
             private_image.visibility = View.GONE
             tv_private_icon.visibility = View.GONE
         }
+
+        val favouriteSet = prefs.getString("fav_set", "").toString()
+        val temp = favouriteSet.split(",")
+        var lovedOne = false
+        if (!temp.isNullOrEmpty() || !temp.equals("")) {
+            if (temp[0] == "") {
+                lovedOne = false
+            } else {
+                temp.forEach {
+                    if (it == documentData["id"].toString()) {
+                        lovedOne = true
+                        return@forEach
+                    }
+                }
+            }
+        }
+        if (lovedOne) {
+            tv_loved_user.visibility = View.VISIBLE
+            tv_love.visibility = View.GONE
+            tv_loved_user.text = "${documentData["likes"]}"
+        } else {
+            tv_loved_user.visibility = View.GONE
+            tv_love.visibility = View.VISIBLE
+            tv_love.text = "${documentData["likes"]}"
+        }
+
 
         shoppingList.forEach {
 
@@ -261,6 +287,14 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
             updateItem()
         }
 
+        tv_love.setOnClickListener {
+            makeFavItem()
+        }
+
+        tv_loved_user.setOnClickListener {
+            removeFavItem()
+        }
+
 
     }
 
@@ -272,6 +306,101 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
 
     private fun toggleSelection(position: Int) {
         mAdapterPreparation!!.toggleSelection(position)
+    }
+
+    private fun makeFavItem() {
+        progressHUD!!.show()
+
+        val prefs: SharedPreferences = getSharedPreferences("MyPrefsFile", 0)
+        var favouriteSet = prefs.getString("fav_set", "").toString()
+        favouriteSet = if (favouriteSet == "") {
+            "${documentData["id"]}"
+        } else {
+            "$favouriteSet,${documentData["id"]}"
+        }
+
+        val count = tv_love.text.toString().toInt() + 1
+        db!!.collection("Recipes").document(documentData["id"].toString())
+            .update("likes", count)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    db!!.collection("User").document(userIdLogged)
+                        .update("favList", favouriteSet)
+                        .addOnCompleteListener { task1 ->
+                            if (task1.isSuccessful) {
+                                tv_loved_user.visibility = View.VISIBLE
+                                tv_loved_user.text = count.toString()
+                                tv_love.visibility = View.GONE
+                                val editor = prefs.edit()
+                                editor.putString("fav_set", favouriteSet)
+                                editor.apply()
+                                progressHUD!!.dismiss()
+
+                            } else {
+                                Log.e("Doc", "Error getting documents: ", task1.exception)
+                                progressHUD!!.dismiss()
+                            }
+                        }
+
+                } else {
+                    Log.e("Doc", "Error getting documents: ", task.exception)
+                    progressHUD!!.dismiss()
+                }
+            }
+    }
+
+    private fun removeFavItem() {
+        progressHUD!!.show()
+        val prefs: SharedPreferences = getSharedPreferences("MyPrefsFile", 0)
+        val favouriteSet = prefs.getString("fav_set", "").toString()
+        var newList = ""
+        val temp = favouriteSet.split(",")
+
+        if (!temp.isNullOrEmpty() || !temp.equals("")) {
+            if (temp[0] == "") {
+                newList += documentData["id"].toString()
+            } else {
+                temp.forEach {
+                    if (it != documentData["id"].toString()) {
+                        newList += "$it,"
+                    }
+                }
+            }
+        }
+
+        if (newList.isNotEmpty() && newList[newList.length - 1] == ',') {
+            newList = newList.substring(0, newList.length - 1)
+        }
+
+        val count = tv_loved_user.text.toString().toInt() - 1
+        db!!.collection("Recipes").document(documentData["id"].toString())
+            .update("likes", count)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    db!!.collection("User").document(userIdLogged)
+                        .update("favList", newList)
+                        .addOnCompleteListener { task1 ->
+                            if (task1.isSuccessful) {
+                                val editor = prefs.edit()
+                                editor.putString("fav_set", newList)
+                                editor.apply()
+                                Log.e("dfdfdf>", newList)
+                                tv_loved_user.visibility = View.GONE
+                                tv_love.text = count.toString()
+                                tv_love.visibility = View.VISIBLE
+                                progressHUD!!.dismiss()
+
+                            } else {
+                                Log.e("Doc", "Error getting documents: ", task1.exception)
+                                progressHUD!!.dismiss()
+                            }
+                        }
+
+                } else {
+                    Log.e("Doc", "Error getting documents: ", task.exception)
+                    progressHUD!!.dismiss()
+                }
+            }
     }
 
     private fun deleteItem() {

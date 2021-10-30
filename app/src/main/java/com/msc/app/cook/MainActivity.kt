@@ -1,5 +1,6 @@
 package com.msc.app.cook
 
+import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -9,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -67,6 +69,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             .load("https://i.pravatar.cc/300")
             .apply(RequestOptions.circleCropTransform())
             .into(imageView)
+
+        val textUserName = header.findViewById<View>(R.id.textView_name) as TextView
+        val textUserEmail = header.findViewById<View>(R.id.textView_email) as TextView
+        val prefs: SharedPreferences = getSharedPreferences("MyPrefsFile", 0)
+
+        textUserName.text = "${prefs.getString("loggedUserFirstName", "").toString()} ${prefs.getString("loggedUserLastName", "").toString()}"
+        textUserEmail.text = "${prefs.getString("loggedUserEmail", "").toString()}"
 
         val profileLayout = header.findViewById<View>(R.id.profile_layout) as LinearLayout
 
