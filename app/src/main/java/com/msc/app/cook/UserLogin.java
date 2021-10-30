@@ -31,7 +31,7 @@ public class UserLogin extends AppCompatActivity {
         setContentView(R.layout.activity_user_login);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String name = prefs.getString("userPhoneNumber", "");
+        String name = prefs.getString("userEmail", "");
         if (!name.equals("")) {
 
             String isVendorLogged = prefs.getString("userIsVender", "");
