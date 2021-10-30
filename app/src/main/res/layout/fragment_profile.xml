@@ -73,7 +73,8 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:includeFontPadding="false"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:text="456"/>
 
                         <TextView
                             android:id="@+id/favTextView"
@@ -112,7 +113,8 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:includeFontPadding="false"
-                            android:textSize="20sp" />
+                            android:textSize="20sp"
+                            android:text="123"/>
 
                         <TextView
                             android:id="@+id/myRecipesTextView"
