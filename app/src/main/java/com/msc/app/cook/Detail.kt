@@ -499,7 +499,7 @@ class Detail : BaseActivity(), PreparationAdapter.ViewHolder.ClickListener {
     private fun updateItem() {
 
         val intent = Intent(this, UpdateActivity::class.java)
-        intent.putExtra("dsdssd", "message")
+        intent.putExtra("DATA_OF_DOCUMENT", documentData)
         startActivity(intent)
     }
 

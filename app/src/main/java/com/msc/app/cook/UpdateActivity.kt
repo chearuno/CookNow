@@ -14,8 +14,15 @@ class UpdateActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val fragmentHome = FragmentEditRecipe()
+        val documentData =
+            intent.getSerializableExtra("DATA_OF_DOCUMENT") as HashMap<String, Any>
+
+        val bundle = Bundle()
+        bundle.putSerializable("RECIPE_DATA", documentData)
+
+        val tempFragment = FragmentEditRecipe()
+        tempFragment.arguments = bundle
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.frameLayout, fragmentHome).commit()
+        ft.replace(R.id.frameLayout, tempFragment).commit()
     }
 }

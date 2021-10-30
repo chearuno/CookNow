@@ -16,6 +16,7 @@ import com.msc.app.cook.ImagesActivity
 import com.msc.app.cook.ImagesActivity.selectedImageList
 import com.msc.app.cook.R
 import com.msc.app.cook.adaptor.SelectedImageAdapter
+import com.msc.app.cook.models.ItemShopping
 import com.msc.app.cook.utils.CustomDialog
 import com.msc.app.cook.utils.Utils.alerterDialog
 import com.msc.app.cook.utils.Utils.toastError
@@ -28,8 +29,8 @@ import java.util.*
 
 class FragmentEditRecipe : Fragment() {
 
-    var selectedImageRecyclerView: RecyclerView? = null
-    var selectedImageAdapter: SelectedImageAdapter? = null
+    private var selectedImageRecyclerView: RecyclerView? = null
+    private var selectedImageAdapter: SelectedImageAdapter? = null
 
     override fun onCreate(a: Bundle?) {
         super.onCreate(a)
@@ -46,6 +47,13 @@ class FragmentEditRecipe : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.title = "EDIT RECIPE"
 
         selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view)
+
+        val putDataOfDocument =
+            requireArguments().getSerializable("RECIPE_DATA") as HashMap<String, Any>
+        view.recipe_name.setText(putDataOfDocument["name"].toString())
+        view.recipe_description.setText(putDataOfDocument["description"].toString())
+        view.checkBox.isChecked = putDataOfDocument["isPrivate"] as Boolean
+        view.txt_cooling_t.text = putDataOfDocument["prepare_time"].toString()
 
         view.btn_next.setOnClickListener {
             when {
@@ -75,7 +83,7 @@ class FragmentEditRecipe : Fragment() {
 
                     val putData: HashMap<String, Any> = HashMap()
                     putData["name"] = view.recipe_name.text.toString()
-                    putData["likes"] = 0
+                    putData["likes"] = putDataOfDocument["likes"].toString()
                     putData["userId"] = userId.toInt()
                     putData["createdBy"] = firstName + lastName
                     putData["description"] = view.recipe_description.text.toString()
@@ -83,6 +91,9 @@ class FragmentEditRecipe : Fragment() {
                     putData["prepare_time"] = view.txt_cooling_t.text.toString()
                     putData["createdDate"] =
                         SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().time)
+                    putData["shopping_list"] = putDataOfDocument["shopping_list"]  as ArrayList<ItemShopping>
+                    putData["preparation"] = putDataOfDocument["preparation"]   as ArrayList<String>
+                    putData["id"] = putDataOfDocument["id"] as Long
 
                     val tempFragment = FragmentEditIngredients()
                     val bundle = Bundle()

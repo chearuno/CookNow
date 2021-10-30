@@ -28,7 +28,7 @@ import kotlin.collections.set
 
 class FragmentNewIngredients : Fragment() {
 
-    private val ingredientList: ArrayList<ItemShopping> = ArrayList()
+    private var ingredientList: ArrayList<ItemShopping> = ArrayList()
     private var ingredientAdapter: IngredientAdapter? = null
 
     private var ingredientRecyclerView: RecyclerView? = null

@@ -26,6 +26,7 @@ import com.msc.app.cook.R
 import com.msc.app.cook.adaptor.DirectionAdapter
 import com.msc.app.cook.adaptor.RecyclerTouchListener
 import com.msc.app.cook.models.ItemPreparation
+import com.msc.app.cook.models.ItemShopping
 import com.msc.app.cook.utils.Utils
 import com.msc.app.cook.utils.Utils.toastError
 import kotlinx.android.synthetic.main.fragment_new_directions.view.*
@@ -69,6 +70,18 @@ class FragmentEditDirections : Fragment() {
 
         view.btn_finish.setOnClickListener {
             uploadToBE()
+        }
+
+        val putData = requireArguments().getSerializable("RECIPE_DATA") as HashMap<String, Any>
+        val preparation = putData["preparation"] as ArrayList<*>
+
+        var i = 1
+        preparation.forEach {
+            val item = ItemPreparation()
+            item.step = it.toString()
+            item.number = i.toString()
+            directionList.add(item)
+            i++
         }
 
         directionRecyclerView = view.findViewById(R.id.recyclerView)
@@ -150,10 +163,6 @@ class FragmentEditDirections : Fragment() {
             progressDialog.setCancelable(false)
 
             val putData = requireArguments().getSerializable("RECIPE_DATA") as HashMap<String, Any>
-            val lowerLimit = 100000000L
-            val upperLimit = 999999999L
-            val r = Random()
-            val documentId = lowerLimit + (r.nextDouble() * (upperLimit - lowerLimit)).toLong()
             val imageList: ArrayList<String> = ArrayList()
             val directionListTemp: ArrayList<String> = ArrayList()
 
@@ -168,7 +177,6 @@ class FragmentEditDirections : Fragment() {
 
             putData["preparation"] = directionListTemp
             putData["images"] = imageList
-            putData["id"] = documentId
 
 
             ImagesActivity.selectedImageList.forEachIndexed { index, element ->
@@ -198,8 +206,8 @@ class FragmentEditDirections : Fragment() {
                     }
             }
 
-            db!!.collection("Recipes").document(documentId.toString())
-                .set(putData)
+            db!!.collection("Recipes").document(putData["id"].toString())
+                .update(putData)
                 .addOnSuccessListener {
 
                 }

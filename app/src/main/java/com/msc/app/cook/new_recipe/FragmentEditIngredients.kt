@@ -2,6 +2,7 @@ package com.msc.app.cook.new_recipe
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,6 +81,19 @@ class FragmentEditIngredients : Fragment() {
                     .replace(R.id.frameLayout, tempFragment).addToBackStack(null)
                     .commit()
             }
+        }
+
+        val shplist = putData["shopping_list"] as ArrayList<*>
+
+        shplist.forEach {
+
+            val item = ItemShopping()
+            val shippingItem = it as HashMap<String, Any>
+
+            item.unit = shippingItem["unit"] as String?
+            item.name = shippingItem["name"] as String?
+            item.qty = shippingItem["qty"] as Long?
+            ingredientList.add(item)
         }
 
         ingredientRecyclerView = view.findViewById(R.id.recyclerView)
