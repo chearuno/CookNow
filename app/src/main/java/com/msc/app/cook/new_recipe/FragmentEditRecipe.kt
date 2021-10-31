@@ -94,6 +94,7 @@ class FragmentEditRecipe : Fragment() {
                     putData["shopping_list"] = putDataOfDocument["shopping_list"]  as ArrayList<ItemShopping>
                     putData["preparation"] = putDataOfDocument["preparation"]   as ArrayList<String>
                     putData["id"] = putDataOfDocument["id"] as Long
+                    putData["categoryId"] = putDataOfDocument["categoryId"] as Long
 
                     val tempFragment = FragmentEditIngredients()
                     val bundle = Bundle()

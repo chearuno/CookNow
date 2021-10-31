@@ -4,20 +4,28 @@ import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.msc.app.cook.ImagesActivity
 import com.msc.app.cook.ImagesActivity.selectedImageList
 import com.msc.app.cook.MainActivity
 import com.msc.app.cook.R
 import com.msc.app.cook.adaptor.SelectedImageAdapter
+import com.msc.app.cook.models.ItemCategory
 import com.msc.app.cook.new_recipe.FragmentNewIngredients
 import com.msc.app.cook.utils.CustomDialog
+import com.msc.app.cook.utils.Utils
 import com.msc.app.cook.utils.Utils.alerterDialog
 import com.msc.app.cook.utils.Utils.toastError
 import kotlinx.android.synthetic.main.fragment_new_recipe.view.*
@@ -31,6 +39,10 @@ class FragmentNewRecipe : Fragment() {
 
     var selectedImageRecyclerView: RecyclerView? = null
     var selectedImageAdapter: SelectedImageAdapter? = null
+    private var progressHUD: KProgressHUD? = null
+    private var db: FirebaseFirestore? = null
+    private var storage: FirebaseStorage? = null
+    private var textCategoryName: TextView? = null
 
     override fun onCreate(a: Bundle?) {
         super.onCreate(a)
@@ -53,6 +65,18 @@ class FragmentNewRecipe : Fragment() {
 
         selectedImageRecyclerView = view.findViewById(R.id.selected_recycler_view)
 
+        progressHUD = KProgressHUD.create(requireContext())
+            .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+            .setLabel("Please wait")
+            .setDetailsLabel("We fetching category list.")
+            .setCancellable(true)
+            .setAnimationSpeed(2)
+            .setDimAmount(0.5f)
+
+        db = FirebaseFirestore.getInstance()
+        storage = FirebaseStorage.getInstance()
+        textCategoryName = view.findViewById(R.id.txtCat)
+
         view.btn_next.setOnClickListener {
             when {
                 selectedImageList.isEmpty() -> {
@@ -60,6 +84,9 @@ class FragmentNewRecipe : Fragment() {
                 }
                 view.recipe_name.text.isEmpty() -> {
                     alerterDialog("Error!", "Recipe name should not be empty.", requireActivity())
+                }
+                textCategoryName!!.text.toString() == "--" -> {
+                    alerterDialog("Error!", "Please Select Category!", requireActivity())
                 }
                 view.recipe_description.text.isEmpty() -> {
                     alerterDialog(
@@ -79,10 +106,19 @@ class FragmentNewRecipe : Fragment() {
                     val firstName = prefs.getString("loggedUserFirstName", "").toString()
                     val lastName = prefs.getString("loggedUserLastName", "").toString()
 
+                    var slsectedCatId = 100L
+                    Utils.categoryItemList.forEach {
+
+                        if (textCategoryName!!.text.toString() == it.categoryName) {
+                            slsectedCatId = it.id!!
+                        }
+                    }
+
                     val putData: HashMap<String, Any> = HashMap()
                     putData["name"] = view.recipe_name.text.toString()
                     putData["likes"] = 0
                     putData["userId"] = userId.toInt()
+                    putData["categoryId"] = slsectedCatId
                     putData["createdBy"] = firstName + lastName
                     putData["description"] = view.recipe_description.text.toString()
                     putData["isPrivate"] = view.checkBox.isChecked
@@ -112,7 +148,84 @@ class FragmentNewRecipe : Fragment() {
             startActivity(intent)
         }
 
+        view.qtyLayoutSub.setOnClickListener {
+            selectCategory()
+        }
+
         return view
+    }
+
+    private fun selectCategory() {
+        if (Utils.categoryItemList.isNotEmpty()) {
+            showMeasurementDialog()
+        } else {
+            progressHUD!!.show()
+            db = FirebaseFirestore.getInstance()
+
+            db!!.collection("Category")
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        for (document in task.result!!) {
+
+                            Log.e("Doc", document.id)
+                            val documentData = document.data
+                            val title = documentData["name"]
+                            val id = documentData["id"]
+                            val image = documentData["image"]
+
+                            val storageRef = storage!!.reference
+
+                            val downloadRef = storageRef.child("CategoryImages/$image")
+
+                            downloadRef.downloadUrl.addOnSuccessListener { uri ->
+                                Log.e("Doc1", " => $uri")
+                                val imageURI = uri.toString()
+                                val item = ItemCategory()
+                                item.categoryName = title as String?
+                                item.id = id as Long?
+                                item.img = imageURI
+                                Utils.categoryItemList.add(item)
+                                progressHUD!!.dismiss()
+                            }
+                                .addOnFailureListener {
+                                    Log.e("Doc", "Error getting Data: ")
+                                    progressHUD!!.dismiss()
+                                }
+                        }
+
+
+                    } else {
+                        Log.e("Doc", "Error getting documents: ", task.exception)
+                        progressHUD!!.dismiss()
+                    }
+                }
+        }
+    }
+
+    private fun showMeasurementDialog() {
+
+        val wsList: Array<String?> = arrayOfNulls(Utils.categoryItemList.size)
+        var i = 0
+        Utils.categoryItemList.forEach {
+            wsList[i] = it.categoryName.toString()
+            i++
+        }
+
+        val builder = AlertDialog.Builder(requireContext())
+
+        builder.setTitle("Select Measurement Unit")
+
+        builder.setItems(wsList) { _, which ->
+            val selected = wsList[which]
+            textCategoryName!!.text = selected
+
+
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+
     }
 
     private fun setSelectedImageList() {
