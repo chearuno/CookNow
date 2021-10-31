@@ -68,7 +68,7 @@ class FragmentProfile : Fragment() {
                         val password = documentData["password"]
 
                         val fullname = view.findViewById(R.id.userFullName) as TextView
-                        fullname.setText(firstName.toString()+" "+lastName.toString());
+                        fullname.setText(firstName.toString() + " " + lastName.toString());
 
                         val fname = view.findViewById(R.id.userFirstName) as TextInputEditText
                         fname.setText(firstName.toString());
@@ -101,10 +101,18 @@ class FragmentProfile : Fragment() {
                     Log.d(TAG, "DocumentSnapshot successfully written!")
                     Toast.makeText(activity, "Update successful", Toast.LENGTH_SHORT).show()
                     val fullname = view.findViewById(R.id.userFullName) as TextView
-                    fullname.setText("${view.userFirstName.text.toString()} ${view.userLastName.text.toString()}");
+                    fullname.setText("${view.userFirstName.text.toString()} ${view.userLastName.text.toString()}")
+                    val editor: SharedPreferences.Editor =
+                        requireActivity().getSharedPreferences("MyPrefsFile", 0).edit()
+
+                    editor.putString("loggedUserFirstName", view.userFirstName.text.toString())
+                    editor.putString("loggedUserLastName", view.userLastName.text.toString())
+                    editor.putString("loggedUserEmail", view.userEmail.text.toString())
+
+                    editor.apply()
                 }
-                .addOnFailureListener {
-                        e -> Log.w(TAG, "Error writing document", e)
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "Error writing document", e)
                     Toast.makeText(activity, "Error updating", Toast.LENGTH_SHORT).show()
                 }
         }
